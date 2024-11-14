@@ -16,6 +16,7 @@
             "CREATE": "sftp::shell-create",
             "CREATED": "sftp::shell-created",
             "DESTROY": "sftp::shell-destroy",
+            "DESTROYED": "sftp::shell-destroyed",
             "MESSAGE": "sftp::shell-message",
             "ERROR": "sftp::shell-error",
             "LIST_SHELLS": "sftp::list-shells",

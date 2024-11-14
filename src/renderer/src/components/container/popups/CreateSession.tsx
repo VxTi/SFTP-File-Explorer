@@ -21,11 +21,10 @@ export function CreateSession() {
 
         // TODO: Fix
         // Acquire values from form event
-        const data = new FormData(event.target as HTMLFormElement);
-        console.log(data, data.values())
-        const host = data.get('host') as string;
-        const port = data.get('port') as string;
-        console.log(`Host: ${host}, Port: ${port}`);
+        const target = event.currentTarget as HTMLFormElement;
+        const formData = new FormData(target);
+        const formObject = Object.fromEntries(formData.entries());
+        console.log(formObject);
     }, []);
 
     return (
@@ -40,24 +39,22 @@ export function CreateSession() {
             </div>
             <Form onSubmit={handleSubmit}>
                 <FormRow>
-                    <FormInput label="Host Address" type="text" id="host"/>
+                    <FormInput label="Host Address" type="text" name="host"
+                               required
+                    />
                     <FormInput label="Port" type="number" min={0} max={1 << 16}
                                className="text-center"
                                defaultValue="22"
-                               id="port"/>
+                               name="port"/>
                 </FormRow>
-                <FormInput label="Username" type="text" id="username"/>
-                <FormInput label="Password" type="password" id="password"/>
+                <FormInput label="Username" type="text" name="username"/>
+                <FormInput label="Password" type="password" name="password"/>
 
-                <FormTextArea id="private-key" placeholder="Private key (optional)" style={{
-                    resize: 'none'
-                }}/>
-                <FormInput label="Passphrase (optional)" type="password" id="passphrase"/>
-                <FormInput label="Alias (optional)" type="text" id="alias"/>
-                <FormCheckbox type="checkbox" label="Use fingerprint verification" id="fingerprint"
-                              className="mt-2 mb-3"
-                />
-                <FormInput value="Create Session" type="submit" className="hover:bg-hover cursor-pointer"/>
+                <FormTextArea name="private-key" placeholder="Private key (optional)" style={{ resize: 'none' }}/>
+                <FormInput label="Passphrase (optional)" type="password" name="passphrase"/>
+                <FormInput label="Alias (optional)" type="text" name="alias"/>
+                <FormCheckbox type="checkbox" label="Use fingerprint verification" name="fingerprint"/>
+                <FormInput value="Create Session" type="submit" className="hover:bg-hover cursor-pointer mt-2"/>
             </Form>
         </div>
     )

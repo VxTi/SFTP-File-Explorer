@@ -8,7 +8,6 @@ import { ReactNode, useMemo }    from "react";
 import { FileIcon, FolderIcon }  from "lucide-react";
 import { IClient }               from "@/common/ssh-definitions";
 import { ContextMenu }           from "@renderer/hooks/ContextMenu";
-import { Renamable }             from "@renderer/components/interactive/Renamable";
 
 
 const FileEntryTypeElements: Record<IFileType, ReactNode> = {
@@ -69,7 +68,9 @@ export function FileListItem(props: { file: IFileEntry, client: IClient, classNa
                 >
                     {FileEntryTypeElements[ props.file.type ]}
                     <div className="flex flex-row justify-start items-center w-full overflow-x-scroll pl-0.5 pr-1">
-                        <Renamable className="text-sm text-nowrap hide-scrollbar text-primary group-focus:text-secondary" initialValue={props.file.name} />
+                        <span className="text-sm text-nowrap hide-scrollbar text-primary group-focus:text-secondary">
+                            {props.file.name}
+                        </span>
                     </div>
                     <div className="flex flex-row group-focus:text-primary text-secondary">
                         <span className="text-xs">{fileSize}</span>

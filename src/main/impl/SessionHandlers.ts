@@ -7,8 +7,8 @@
 import { ipcMain } from "electron";
 
 import EVENTS                           from '@/common/ipc-events.json';
-import { RegisteredSessions }           from "./SFTP";
 import { ISSHSession, ISSHSessionSafe } from "@/common/ssh-definitions";
+import { RegisteredSessions }           from "./SFTPHandlers";
 
 /**
  * Create a session ID.

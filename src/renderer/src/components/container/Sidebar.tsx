@@ -3,17 +3,18 @@
  * @author Luca Warmenhoven
  * @date Created on Friday, November 01 - 16:29
  */
-import { ReactNode, useContext, useEffect, useState }                                   from "react";
-import { BookOpenIcon, ChevronRightIcon, FileIcon, PlusIcon, SettingsIcon, WrenchIcon } from "lucide-react";
+import { ReactNode, useContext, useEffect, useState }                         from "react";
+import { BookOpenIcon, ChevronRightIcon, PlusIcon, SettingsIcon, WrenchIcon } from "lucide-react";
 
 import { PopupContext }       from "@renderer/contexts/PopupContext";
 import { ResizableContainer } from "@renderer/components/container/ResizableContainer";
 import { CreateSession }      from "@renderer/components/container/popups/CreateSession";
 import { ISSHSession }        from "@/common/ssh-definitions";
 import { SFTPContext }        from "@renderer/contexts/SFTPContextProvider";
-import EVENTS                from "@/common/ipc-events.json";
+import EVENTS                 from "@/common/ipc-events.json";
 
 export interface SidebarItemProps {
+    expanded?: boolean;
     title: string;
     icon?: ReactNode;
     onClick?: () => void,
@@ -36,21 +37,10 @@ const SidebarContent: SidebarItemProps[] = [
                 onClick: () => console.log("Settings clicked")
             }
         ]
-    },
-    {
-        title: "Tools",
-        icon: null,
-        childNodes: [
-            {
-                title: "Console",
-                icon: <FileIcon size={16}/>,
-                onClick: () => console.log("Console clicked")
-            }
-        ]
     }
 ];
 
-export function SidebarContainer() {
+export function Sidebar() {
 
     const [ pinnedHosts, setPinnedHosts ] = useState<ISSHSession[]>([]);
     const [ visible, setVisible ]         = useState<boolean>(true);
@@ -70,6 +60,8 @@ export function SidebarContainer() {
     }, [ visible ]);
 
     useEffect(() => {
+
+        // TODO: Add retrieval of hosts from main process
 
         const pinnedHosts = localStorage.getItem("pinnedHosts");
         if ( pinnedHosts ) {
@@ -109,6 +101,7 @@ export function SidebarContainer() {
                     setPopup({ uid: 'add-session', content: <CreateSession/>, priority: 3, type: 'fullscreen' });
                 }}/>
                 <SidebarSection title="Recent Sessions"
+                                expanded={true}
                                 icon={<WrenchIcon size={20}/>}
                                 childNodes={pinnedHosts.map((host) => ({
                                     title: host.alias ?? (`sftp://${host.hostAddress}:${host.port}`),
@@ -126,7 +119,7 @@ export function SidebarContainer() {
 
 function SidebarSection(props: SidebarItemProps) {
 
-    const [ expanded, setExpanded ] = useState<boolean>(false);
+    const [ expanded, setExpanded ] = useState<boolean>(props.expanded ?? false);
 
     return (
         <div className="flex flex-col justify-start items-stretch gap-y-0.5 select-none w-full">

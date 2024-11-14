@@ -2,8 +2,8 @@
  * @fileoverview BasicApplicationContent.tsx
  */
 
-import { SidebarContainer } from "@renderer/components/container/Sidebar";
-import { FileExplorer }      from "@renderer/components/container/FileExplorer";
+import { Sidebar }      from "@renderer/components/container/Sidebar";
+import { FileExplorer } from "@renderer/components/container/FileExplorer";
 import { TerminalContainer } from "@renderer/components/container/Terminal";
 import { SFTPContext }       from "@renderer/contexts/SFTPContextProvider";
 import { useContext }           from "react";
@@ -17,12 +17,10 @@ export function BasicApplicationContent() {
 
     const { status, clients } = useContext(SFTPContext);
 
-    console.log(clients, status)
-
     return (
         <div className="flex flex-col justify-start items-stretch grow text-primary">
             <div className="flex flex-row justify-start items-stretch grow">
-                <SidebarContainer/>
+                <Sidebar/>
                 <div className="flex flex-col justify-start items-stretch grow">
                     {
                         (status === 'connecting') ?

@@ -95,20 +95,22 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
 
         window.api.sftp.homeDir(sessionId)
               .then((remoteHomeDir) => {
-                  setRemoteClient(
-                      {
-                          cwd: localCwd,
-                          setCwd: setLocalCwd,
-                          homeDir: window.api.fs.localHomeDir,
-                          listFiles: window.api.fs.listFiles,
-                          appendFile: async (absolutePath: string, content: string) => {
-                          },
-                          rmFile: async (absolutePath: string) => {
-                          },
-                          mkdir: async (absolutePath: string) => {
-                          }
-                      });
-                  setRemoteCwd(remoteHomeDir);
+                  setRemoteCwd(() => {
+                      setRemoteClient(
+                          {
+                              cwd: remoteHomeDir,
+                              setCwd: setRemoteCwd,
+                              homeDir: remoteHomeDir,
+                              listFiles: (cwd) => window.api.sftp.listFiles(sessionId, cwd),
+                              appendFile: async (absolutePath: string, content: string) => {
+                              },
+                              rmFile: async (absolutePath: string) => {
+                              },
+                              mkdir: async (absolutePath: string) => {
+                              }
+                          });
+                      return remoteHomeDir;
+                  })
               });
 
     }, [ localCwd, remoteCwd, sessionId, shells ]);

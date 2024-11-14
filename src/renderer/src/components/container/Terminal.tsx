@@ -45,8 +45,6 @@ const defaultTerminal = new Terminal(
 const fitAddon = new FitAddon();
 defaultTerminal.loadAddon(fitAddon);
 
-const generateSessionHash = () => Math.random().toString(36).substring(2, 15);
-
 /**
  * TerminalContainer
  * @constructor
@@ -96,7 +94,7 @@ export function TerminalContainer() {
                         lineBuffer = '';
                         break;
                     default: {
-                        if (e.domEvent.ctrlKey && e.domEvent.key === 'c') {
+                        if ( e.domEvent.ctrlKey && e.domEvent.key === 'c' ) {
                             lineBuffer += '\x03';
                             defaultTerminal.write('^C');
                         }
@@ -123,6 +121,11 @@ export function TerminalContainer() {
             console.log("Setting shell ID: ", messageObj.shellId)
             addSession(messageObj.shellId, 'Session #' + (terminalSessions.size + 1));
             setCurrentTerminalSessionID(messageObj.shellId);
+        });
+
+        // Handle destruction of shell sessions.
+        window.api.on(EVENTS.SFTP.SHELL.DESTROYED, (_, messageObj: { shellId: string }) => {
+            removeSession(messageObj.shellId);
         });
 
         // Handle deletion of terminal sessions.
@@ -189,7 +192,7 @@ export function TerminalContainer() {
                                                         initialValue={sessionName}
                                                     />
                                                     <div className="hover:brightness-110"
-                                                         onClick={() => removeSession(sessionId)}>
+                                                         onClick={() => window.api.sftp.shell.destroy(sessionId)}>
                                                         <XIcon size={16}/>
                                                     </div>
                                                 </div>
@@ -205,7 +208,7 @@ export function TerminalContainer() {
                 </div>
             </div>
             <PlusIcon className={InteractiveIconClasses}
-                      onClick={() => addSession(generateSessionHash(), 'Session #' + (terminalSessions.size + 1))}
+                      onClick={() => window.api.sftp.shell.create(sessionId!)}
                       size={InteractiveIconSize}/>
             <div onClick={() => setMaximized(( !isMaximized))} className={"flex ml-auto " + InteractiveIconClasses}>
                 {isMaximized ?

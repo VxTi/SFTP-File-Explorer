@@ -1,5 +1,5 @@
 /**
- * @fileoverview Navigator.tsx
+ * @fileoverview ActionBar.tsx
  * @author Luca Warmenhoven
  * @date Created on Thursday, November 14 - 09:04
  */
@@ -9,11 +9,11 @@ import { ChevronLeftIcon, ChevronRightIcon, HomeIcon, RefreshCcwIcon } from "luc
 import { InteractiveIconClasses, InteractiveIconSize }                 from "@renderer/components/Icons";
 
 /**
- * Navigator component.
+ * ActionBar component.
  * This component resides at the top of the file explorer and allows the user to navigate through the file system.
  * @param props.client - The client instance to navigate with.
  */
-export function Navigator(props: { client: IClient }) {
+export function ActionBar(props: { client: IClient }) {
 
     const [ isEditing, setEditing ] = useState<boolean>(false);
 

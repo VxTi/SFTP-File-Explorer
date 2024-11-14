@@ -6,7 +6,7 @@
 import { ReactNode } from "react";
 
 /**
- * Navigator Elements window property key
+ * ActionBar Elements window property key
  */
 export const NavigatorElementsWindowPropertyKey = "declaredNavigatorElements";
 
@@ -15,7 +15,7 @@ export type NavigatorElementPosition = 'header' | 'footer';
 export type NavigatorElementSide = 'left' | 'right';
 
 /**
- * Navigator Element properties
+ * ActionBar Element properties
  * These properties define the behavior of a navigator element
  */
 export interface NavigatorElement {
@@ -40,7 +40,7 @@ window[ NavigatorElementsWindowPropertyKey ][ 'header' ] ??= { 'left': {}, 'righ
 window[ NavigatorElementsWindowPropertyKey ][ 'footer' ] ??= { 'left': {}, 'right': {} };
 
 /**
- * Navigator elements, exported as a record referencing the navigator elements
+ * ActionBar elements, exported as a record referencing the navigator elements
  */
 export const NavigatorElements = window[ NavigatorElementsWindowPropertyKey ] as
     Record<NavigatorElementPosition,

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Navigator.tsx
+ * @fileoverview ActionBar.tsx
  * @author Luca Warmenhoven
  * @date Created on Thursday, November 07 - 16:35
  */

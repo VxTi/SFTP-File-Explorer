@@ -48,16 +48,16 @@ export function FormCheckbox(props: any) {
 
     return (
         <label className="flex flex-row items-center gap-2">
-            <div className="relative flex place-items-center">
+            <div className="grid grid-cols-1 grid-rows-1 place-items-center">
                 <input type="checkbox"
                        {...props}
-                       className={`rounded-md appearance-none w-4 h-4 bg-secondary border-[1px] border-solid border-primary focus:outline-theme-special ${props.className ?? ''}`}
+                       className={`row-start-1 col-start-1 rounded-md appearance-none w-4 h-4 bg-secondary border-[1px] border-solid border-primary focus:outline-theme-special ${props.className ?? ''}`}
                        onChange={(e) => {
                            setChecked(e.target.checked);
                            props.onChange?.(e.target.checked)
                        }}/>
                 {checked && (
-                    <CheckIcon className="absolute left-0 top-0 w-full h-full text-special"/>
+                    <CheckIcon strokeWidth={3} size={14} className="pointer-events-none row-start-1 col-start-1 text-special"/>
                 )}
             </div>
             <span className="select-none">{props.label}</span>
