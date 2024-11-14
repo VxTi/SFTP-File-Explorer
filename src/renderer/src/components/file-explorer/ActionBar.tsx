@@ -34,7 +34,7 @@ export function ActionBar(props: { client: IClient }) {
     }, [ props.client.cwd ]);
 
     return (
-        <div className="grid items-center text-primary text-sm w-full h-full p-1"
+        <div className="grid items-center bg-primary text-primary text-sm w-full h-full p-1"
              style={{ gridTemplateColumns: '1fr 3fr 1fr' }}
         >
             <div className="pr-1 mr-1 gap-1 flex justify-start items-center">

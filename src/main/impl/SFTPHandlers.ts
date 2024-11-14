@@ -4,14 +4,14 @@
  * @date Created on Wednesday, November 13 - 14:44
  */
 
-import { ipcMain }                                                      from "electron";
+import { ipcMain, systemPreferences }                                   from "electron";
 import { IShellMessage, IShellSession, ISSHSession, TConnectionStatus } from "@/common/ssh-definitions";
 import { IFileEntry }                                                   from "@/common/file-information";
 import { Client, ClientChannel, SFTPWrapper }                           from "ssh2";
 import { IpcMainInvokeEvent }                                           from "electron/main";
 import fs                                                               from "fs";
-import { sessionsPath } from "./SessionHandlers";
-import EVENTS           from '@/common/events.json';
+import { sessionsPath }                                                 from "./SessionHandlers";
+import EVENTS                                                           from '@/common/events.json';
 
 export interface IRegisteredSession {
     session: ISSHSession;
@@ -112,6 +112,8 @@ ipcMain.handle(EVENTS.SFTP.SHELL.LIST_SHELLS, (event, sessionId: string) => {
  * Creates a new shell instance in the provided SSH session.
  * This will attempt to create a new shell instance in the provided SSH session.
  * If the creation is successful, the shell ID will emit in the 'SFTP.SHELL.CREATED' event.
+ * @sends `SFTP.SHELL.CREATED` event with params `{ shellId: string }`
+ * @sends `SFTP.SHELL.MESSAGE` event with params `{ target: 'stderr', message: string }`
  */
 ipcMain.handle(EVENTS.SFTP.SHELL.CREATE, (event, sessionId: string) => {
     if ( !RegisteredSessions.has(sessionId) ) {
@@ -189,6 +191,7 @@ ipcMain.handle(EVENTS.SFTP.SHELL.CREATE, (event, sessionId: string) => {
 
 /**
  * Destroys the shell instance in the provided SSH session.
+ * @sends `SFTP.SHELL.DESTROYED` event with params `{ shellId: string }`
  */
 ipcMain.handle(EVENTS.SFTP.SHELL.DESTROY, (event, sessionId: string, shellId: string) => {
     if ( !verifySessionID(event, sessionId) )
@@ -208,6 +211,26 @@ ipcMain.handle(EVENTS.SFTP.SHELL.DESTROY, (event, sessionId: string, shellId: st
 });
 
 /**
+ * Retrieves the content of the shell instance in the provided SSH session.
+ * This will return the content of the shell instance.
+ * @returns {string} The content of the shell instance.
+ */
+ipcMain.handle(EVENTS.SFTP.SHELL.GET_CONTENT, (event, sessionId: string, shellId: string) => {
+    if ( !verifySessionID(event, sessionId) )
+        return;
+
+    const session = RegisteredSessions.get(sessionId)!;
+
+    if ( !session.shells.has(shellId) ) {
+        event.sender.send(EVENTS.SFTP.SHELL.MESSAGE,
+                          { target: 'stderr', message: 'Shell not found.' } as IShellMessage);
+        return;
+    }
+
+    return session.shells.get(shellId)!.sessionContent;
+});
+
+/**
  * Attempts to establish an SSH Connection with the remote server.
  * This will return the session object if the connection is successful.
  */
@@ -216,6 +239,23 @@ ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, sessionId: string
         return { sessionId: null, error: 'Session not found.' };
 
     const session = RegisteredSessions.get(sessionId)!.session;
+
+    /* Fingerprint verification */
+    do {
+        if ( !(session.requiresFingerprintVerification && process.platform === 'darwin') )
+            break;
+
+        if ( !systemPreferences.canPromptTouchID() )
+            break;
+
+        try {
+            await systemPreferences.promptTouchID('Please verify your fingerprint to continue.');
+        } catch (error) {
+            return { sessionId: null, error: 'Fingerprint verification failed.' };
+        }
+
+    } while ( false );
+
     const client = new Client();
 
     const sessionObject: IRegisteredSession = {

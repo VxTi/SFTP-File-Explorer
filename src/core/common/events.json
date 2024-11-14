@@ -20,7 +20,8 @@
             "MESSAGE": "sftp::shell-message",
             "ERROR": "sftp::shell-error",
             "LIST_SHELLS": "sftp::list-shells",
-            "EXEC": "sftp::shell-execute"
+            "EXEC": "sftp::shell-execute",
+            "GET_CONTENT": "sftp::shell-get-content"
         },
         "LIST_FILES": "sftp::list-files",
         "HOME_DIR": "sftp::home-dir",

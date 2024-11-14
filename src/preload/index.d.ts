@@ -14,14 +14,15 @@ declare global {
             },
             sftp: {
                 shell: {
-                    create: (sessionUid: string) => Promise<string>,
-                    destroy: (sessionUid: string) => Promise<void>,
-                    exec: (sessionUid: string, shellUid: string, command: string) => Promise<void>,
-                    listShells: (sessionUid: string) => Promise<string[]>
+                    getContent: (sessionId: string, shellId: string) => Promise<string>,
+                    create: (sessionId: string) => Promise<void>,
+                    destroy: (sessionId: string, shellId: string) => Promise<void>,
+                    exec: (sessionId: string, shellId: string, command: string) => Promise<void>,
+                    listShells: (sessionId: string) => Promise<string[]>
                 },
                 connect: (sessionId: string) => Promise<{ error: null | string, sessionId: string | null }>,
-                homeDir: (sessionUid: string) => Promise<string>,
-                listFiles: (sessionUid: string, targetPath: string) => Promise<IFileEntry[]>
+                homeDir: (sessionId: string) => Promise<string>,
+                listFiles: (sessionId: string, targetPath: string) => Promise<IFileEntry[]>
             },
             sessions: {
                 list: () => Promise<ISSHSessionSafe[]>,

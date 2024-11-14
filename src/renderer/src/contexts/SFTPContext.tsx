@@ -3,7 +3,7 @@
  * @author Luca Warmenhoven
  * @date Created on Wednesday, November 13 - 13:08
  */
-import { IClient, IShell, ISSHSessionSafe }                                                     from "@/common/ssh-definitions";
+import { IClient, ISSHSessionSafe }                                                             from "@/common/ssh-definitions";
 import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useEffect, useState } from "react";
 import EVENTS
                                                                                                 from "@/common/events.json";
@@ -20,7 +20,9 @@ interface SFTPContextType {
     sessionId: string | null,
     sessions: ISSHSessionSafe[],
     authorize: (sessionId: string) => void,
-    createShell: () => Promise<string | null>
+    createShell: () => Promise<void>
+    shellId: string | null,
+    setShellID: Dispatch<SetStateAction<string | null>>
 }
 
 export const SFTPContext = createContext<SFTPContextType>(
@@ -28,8 +30,12 @@ export const SFTPContext = createContext<SFTPContextType>(
         authorize: () => 0,
         sessions: [],
         clients: { local: null, remote: null },
-        status: 'disconnected', setStatus: () => 0,
-        sessionId: null, createShell: async () => null
+        status: 'disconnected',
+        setStatus: () => 0,
+        sessionId: null,
+        createShell: async () => void 0,
+        shellId: null,
+        setShellID: () => 0
     });
 
 /**
@@ -44,7 +50,8 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
 
     const [ sessions, setSessions ] = useState<ISSHSessionSafe[]>([]);
 
-    const [ shells, setShells ]       = useState<IShell[]>([]);
+    const [ shellId, setShellId ] = useState<string | null>(null);
+
     const [ sessionId, setSessionId ] = useState<string | null>(null);
     const [ status, setStatus ]       = useState<SFTPConnectionStatus>('disconnected');
 
@@ -82,11 +89,11 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
     /**
      * Creates a new shell
      */
-    const createShell: () => Promise<string | null> = useCallback(async () => {
+    const createShell = useCallback(async (): Promise<void> => {
         if ( !sessionId )
-            return null;
+            return;
 
-        return await window.api.sftp.shell.create(sessionId);
+        await window.api.sftp.shell.create(sessionId);
     }, [ sessionId ]);
 
     useEffect(() => {
@@ -128,13 +135,17 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
                   })
               });
 
-    }, [ localCwd, remoteCwd, sessionId, shells ]);
+    }, [ localCwd, remoteCwd, sessionId ]);
 
     return (
         <SFTPContext.Provider value={{
             clients: { local: localClient, remote: remoteClient },
             sessions,
-            authorize, createShell, sessionId,
+            shellId,
+            setShellID: setShellId,
+            createShell,
+            authorize,
+            sessionId,
             status, setStatus
         }}>
             {props.children}

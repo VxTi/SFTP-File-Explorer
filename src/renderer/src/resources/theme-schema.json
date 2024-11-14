@@ -35,7 +35,7 @@
                 "properties": {
                     "backgroundColor": {
                         "type": "string",
-                        "description": "The background color of the theme."
+                        "description": "The background color of the theme.",
                     },
                     "primaryColor": {
                         "type": "string",

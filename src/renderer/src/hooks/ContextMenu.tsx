@@ -23,7 +23,7 @@ export interface ContextMenuDivider extends ContextMenuItemBase<'divider'> {}
 
 export interface ContextMenuItem extends ContextMenuItemBase<'item'> {
     name: string;
-    icon: string;
+    icon?: ReactNode;
     shortcut?: string;
     onClick: () => void;
 }

@@ -12,9 +12,10 @@ import { Renamable }                                   from "@renderer/component
 import { InteractiveIconClasses, InteractiveIconSize } from "@renderer/components/Icons";
 import { MaximizeIcon, MinimizeIcon, PlusIcon, XIcon } from "lucide-react";
 import { SFTPContext }                                 from "@renderer/contexts/SFTPContext";
-import { IShellMessage } from "@/common/ssh-definitions";
-import EVENTS            from "@/common/events.json";
+import { IShellMessage }                               from "@/common/ssh-definitions";
+import EVENTS                                          from "@/common/events.json";
 import '../../styles/xterm-styles.css';
+import { ContextMenu }                                 from "@renderer/hooks/ContextMenu";
 
 /**
  * Default terminal configuration, used to create a new terminal instance
@@ -51,12 +52,23 @@ defaultTerminal.loadAddon(fitAddon);
 export function TerminalContainer() {
     const terminalContainerRef = useRef<HTMLDivElement>(null);
 
-    const [ terminalSize, setTerminalSize ]                         = useState<number>(200);
-    const [ currentTerminalSessionID, setCurrentTerminalSessionID ] = useState<string | null>(null);
-    const [ terminalVisible, setTerminalVisible ]                   = useState<boolean>(true);
-    const [ isMaximized, setMaximized ]                             = useState<boolean>(false);
-    const [ terminalSessions, addSession, removeSession ]           = useMap<string, string>();
-    const { sessionId }                                             = useContext(SFTPContext);
+    const [ terminalSize, setTerminalSize ]               = useState<number>(200);
+    const [ terminalVisible, setTerminalVisible ]         = useState<boolean>(true);
+    const [ isMaximized, setMaximized ]                   = useState<boolean>(false);
+    const [ terminalSessions, addSession, removeSession ] = useMap<string, string>();
+    const { sessionId, shellId, setShellID }              = useContext(SFTPContext);
+
+    useEffect(() => {
+
+        if ( !sessionId || !shellId || !terminalVisible || !defaultTerminal.element )
+            return;
+
+        defaultTerminal.clear();
+        fitAddon.fit();
+        window.api.sftp.shell.getContent(sessionId, shellId)
+            .then(content => defaultTerminal.write(content));
+
+    }, [ shellId, sessionId, terminalVisible ]);
 
     useEffect(() => {
 
@@ -67,7 +79,7 @@ export function TerminalContainer() {
             terminalVisible &&
             !defaultTerminal.element &&
             sessionId &&
-            currentTerminalSessionID ) {
+            !shellId ) {
 
             defaultTerminal.clear();
             defaultTerminal.open(terminalContainerRef.current);
@@ -81,12 +93,12 @@ export function TerminalContainer() {
                         lineBuffer = newBuffer;
                         break;
                     case 'Enter':
-                        if ( lineBuffer.trim().length === 0 || !currentTerminalSessionID )
+                        if ( lineBuffer.trim().length === 0 || !shellId )
                             break;
 
                         window.api.sftp.shell.exec(
                             sessionId,
-                            currentTerminalSessionID,
+                            shellId,
                             lineBuffer
                         );
                         defaultTerminal.write('\n\r');
@@ -108,7 +120,7 @@ export function TerminalContainer() {
             window.removeEventListener(EVENTS.RENDERER.TOGGLE_TERMINAL, handleVisibility);
         }
 
-    }, [ terminalContainerRef, currentTerminalSessionID, terminalVisible, sessionId ]);
+    }, [ terminalContainerRef, terminalVisible, sessionId ]);
 
     useEffect(() => {
         if ( !sessionId )
@@ -119,7 +131,7 @@ export function TerminalContainer() {
         window.api.on(EVENTS.SFTP.SHELL.CREATED, (_, messageObj: { shellId: string }) => {
             console.log("Setting shell ID: ", messageObj.shellId)
             addSession(messageObj.shellId, 'Session #' + (terminalSessions.size + 1));
-            setCurrentTerminalSessionID(messageObj.shellId);
+            setShellID(messageObj.shellId);
         });
 
         // Handle destruction of shell sessions.
@@ -170,18 +182,7 @@ export function TerminalContainer() {
                 <div
                     className="absolute left-0 top-0 w-full h-full flex flex-row justify-start items-center hide-scrollbar">
                     {Array.from(terminalSessions).map(([ sessionId, sessionName ], idx) => (
-                        <div key={idx}
-                            className={`rounded-lg flex my-0.5 mx-1 flex-row justify-center items-center gap-2 py-1 px-4 group hover:bg-hover ${(sessionId === currentTerminalSessionID) ? 'bg-secondary' : 'bg-primary'}`}>
-                            <Renamable
-                                className="text-secondary group-hover:text-secondary-hover text-sm hover:cursor-pointer text-nowrap"
-                                onClick={() => setCurrentTerminalSessionID(sessionId)}
-                                initialValue={sessionName}
-                            />
-                            <div className="hover:brightness-110"
-                                 onClick={() => window.api.sftp.shell.destroy(sessionId)}>
-                                <XIcon size={16}/>
-                            </div>
-                        </div>
+                        <ShellSession shellId={sessionId} sessionId={sessionId} sessionName={sessionName} key={idx}/>
                     ))}
                 </div>
             </div>
@@ -201,4 +202,29 @@ export function TerminalContainer() {
                  ref={terminalContainerRef}/>
         </div>
     </ResizableContainer>)
+}
+
+function ShellSession(props: { shellId: string, sessionId: string, sessionName: string }) {
+
+    const { shellId, setShellID } = useContext(SFTPContext);
+
+    return (
+        <ContextMenu<HTMLDivElement> items={[]}>
+            {(ref) => (
+                <div
+                    ref={ref}
+                    className={`rounded-lg flex my-0.5 mx-1 flex-row justify-center items-center gap-2 py-1 px-4 group hover:bg-hover ${(props.shellId === shellId) ? 'bg-secondary' : 'bg-primary'}`}>
+                    <Renamable
+                        className="text-secondary group-hover:text-secondary-hover text-sm hover:cursor-pointer text-nowrap"
+                        onClick={() => setShellID(props.shellId)}
+                        initialValue={props.sessionName}
+                    />
+                    <div className="hover:brightness-110"
+                         onClick={() => window.api.sftp.shell.destroy(props.sessionId, props.shellId)}>
+                        <XIcon size={16}/>
+                    </div>
+                </div>
+            )}
+        </ContextMenu>
+    );
 }

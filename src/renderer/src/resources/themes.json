@@ -17,5 +17,24 @@
             "specialColor": "#646cff",
             "specialTextColor": "#646cff"
         }
+    },
+    {
+        "name": "Dark Red",
+        "colors": {
+            "backgroundColor": "#340b0b",
+            "primaryColor": "#240c0c",
+            "primaryTextColor": "#c8b8b8",
+            "primaryBorderColor": "#000000",
+            "primaryHoverColor": "#430404",
+            "primaryTextHoverColor": "#000000",
+            "primaryBorderHoverColor": "#000000",
+            "secondaryColor": "#451414",
+            "secondaryTextColor": "#733d3d",
+            "secondaryBorderColor": "#000000",
+            "secondaryTextHoverColor": "#6f3e3e",
+            "tertiaryColor": "#d0d0d0",
+            "specialColor": "#d13a3a",
+            "specialTextColor": "#d13a3a"
+        }
     }
 ]

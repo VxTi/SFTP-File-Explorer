@@ -8,6 +8,7 @@ import { ReactNode, useMemo }    from "react";
 import { FileIcon, FolderIcon }  from "lucide-react";
 import { IClient }               from "@/common/ssh-definitions";
 import { ContextMenu }           from "@renderer/hooks/ContextMenu";
+import { byteValueToString }     from "@renderer/util/StringUtils";
 
 
 const FileEntryTypeElements: Record<IFileType, ReactNode> = {
@@ -29,28 +30,22 @@ export function FileListItem(props: { file: IFileEntry, client: IClient, classNa
     const fileSize = useMemo(() => {
         if ( props.file.type === 'directory' )
             return '';
-        if ( props.file.size < 1024 )
-            return props.file.size + ' bytes';
-        if ( props.file.size < 1024 * 1024 )
-            return (props.file.size / 1024).toFixed(2) + ' KB';
-        if ( props.file.size < 1024 * 1024 * 1024 )
-            return (props.file.size / 1024 / 1024).toFixed(2) + ' MB';
-        return (props.file.size / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+        return byteValueToString(props.file.size);
     }, [ props.file.size ]);
 
     return (
         <ContextMenu<HTMLButtonElement> items={[
-            { type: 'item', name: 'Open', icon: 'open', onClick: () => console.log('Open') },
-            { type: 'item', name: 'Edit', icon: 'edit', onClick: () => console.log('Edit') },
+            { type: 'item', name: 'Open', onClick: () => console.log('Open') },
+            { type: 'item', name: 'Edit', onClick: () => console.log('Edit') },
             { type: 'divider' },
-            { type: 'item', name: 'Copy', icon: 'copy', onClick: () => console.log('Copy') },
-            { type: 'item', name: 'Cut', icon: 'cut', onClick: () => console.log('Cut') },
-            { type: 'item', name: 'Paste', icon: 'paste', onClick: () => console.log('Paste') },
+            { type: 'item', name: 'Copy', onClick: () => console.log('Copy') },
+            { type: 'item', name: 'Cut', onClick: () => console.log('Cut') },
+            { type: 'item', name: 'Paste', onClick: () => console.log('Paste') },
             { type: 'divider' },
-            { type: 'item', name: 'Delete', icon: 'delete', onClick: () => console.log('Delete') },
-            { type: 'item', name: 'Rename', icon: 'rename', onClick: () => console.log('Rename') },
+            { type: 'item', name: 'Delete', onClick: () => console.log('Delete') },
+            { type: 'item', name: 'Rename', onClick: () => console.log('Rename') },
             { type: 'divider' },
-            { type: 'item', name: 'Properties', icon: 'properties', onClick: () => console.log('Properties') }
+            { type: 'item', name: 'Properties', onClick: () => console.log('Properties') }
         ]}>
             {(ref) => (
                 <button

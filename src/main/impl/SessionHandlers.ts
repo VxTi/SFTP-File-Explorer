@@ -40,7 +40,8 @@ function excludeSensitiveProperties(sessionId: string): ISSHSessionSafe | null {
         hostAddress: session.session.hostAddress,
         port: session.session.port ?? 22,
         alias: session.session.alias,
-        requiresFingerprintVerification: session.session.requiresFingerprintVerification
+        requiresFingerprintVerification: session.session.requiresFingerprintVerification,
+        status: session.status
     } as ISSHSessionSafe;
 }
 

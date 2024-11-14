@@ -22,7 +22,7 @@ export function ActiveSessionsHeader() {
     const { sessions } = useContext(SFTPContext);
 
     return (
-        <div className="flex flex-row justify-start items-center border-b-[1px] border-primary gap-0.5">
+        <div className="flex flex-row justify-start bg-primary items-center border-b-[1px] border-primary gap-0.5">
             <CloudOffIcon size={26} className={InteractiveIconClasses}/>
             {sessions
                 .filter(session => session.status === 'connected')

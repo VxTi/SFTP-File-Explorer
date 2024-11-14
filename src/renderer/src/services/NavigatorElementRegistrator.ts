@@ -53,7 +53,6 @@ export const NavigatorElements = window[ NavigatorElementsWindowPropertyKey ] as
  * @param element The navigator element
  */
 export function registerNavigatorElement(identifier: string, element: NavigatorElement) {
-    console.log(`Registering navigator element with identifier ${identifier}`);
     if ( NavigatorElements[ element.position ]?.[ element.side ]?.[ identifier ] ) {
         console.warn(`Navigator element with identifier ${identifier} already exists!`);
     }

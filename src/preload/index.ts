@@ -12,17 +12,35 @@ contextBridge.exposeInMainWorld('api', {
         electronAPI.ipcRenderer.on(channel, listener)
     },
     sessions: {
+        /**
+         * Lists all SSH sessions
+         */
         list: async () => {
             return await electronAPI.ipcRenderer.invoke(EVENTS.SESSIONS.LIST)
         },
+
+        /**
+         * Creates a new SSH session
+         * @param session The session to create
+         */
         create: async (session: Omit<ISSHSession, 'uid'>) => {
             await electronAPI.ipcRenderer.invoke(EVENTS.SESSIONS.CREATE, session)
         },
+
+        /**
+         * Removes an SSH session
+         * @param sessionId The session ID of the session to remove
+         */
         remove: async (sessionId: string) => {
             await electronAPI.ipcRenderer.invoke(EVENTS.SESSIONS.REMOVE, sessionId)
         },
     },
     fs: {
+
+        /**
+         * Lists files in a directory
+         * @param targetPath The path to list files in
+         */
         listFiles: async (targetPath: string): Promise<IFileEntry[]> => {
             return await electronAPI.ipcRenderer.invoke(EVENTS.LOCAL_FS.LIST_FILES, targetPath)
         },
@@ -31,27 +49,75 @@ contextBridge.exposeInMainWorld('api', {
     },
     sftp: {
         shell: {
+
+            /**
+             * Creates a shell on the SFTP server
+             * @param sessionUid The session ID of the SFTP server
+             */
             create: async (sessionUid: string) => {
                 return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.CREATE, sessionUid)
             },
-            destroy: async (sessionUid: string) => {
-                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.DESTROY, sessionUid)
+
+            /**
+             * Destroys a shell with a given session ID and shell ID
+             * @param sessionId The session ID of the shell
+             * @param shellId The shell ID
+             */
+            destroy: async (sessionId: string, shellId: string) => {
+                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.DESTROY, sessionId, shellId)
             },
-            exec: async (sessionUid: string, shellUid: string, command: string) => {
-                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.EXEC, sessionUid, shellUid, command)
+
+            /**
+             * Executes a command in a shell on the SFTP server
+             * @param sessionId The session ID of the shell
+             * @param shellId The shell ID
+             * @param command The command to execute
+             */
+            exec: async (sessionId: string, shellId: string, command: string) => {
+                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.EXEC, sessionId, shellId, command)
             },
-            listShells: async (sessionUid: string) => {
-                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.LIST_SHELLS, sessionUid)
+
+            /**
+             * Lists all shells associated with the provided session ID
+             * @param sessionId The session ID of the shell
+             */
+            listShells: async (sessionId: string) => {
+                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.LIST_SHELLS, sessionId)
+            },
+
+            /**
+             * Gets the content of a shell from a given session with a given shell ID
+             * @param sessionId The session ID of the shell
+             * @param shellId The shell ID
+             */
+            getContent: async (sessionId: string, shellId: string) => {
+                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.GET_CONTENT, sessionId, shellId)
             }
         },
+
+        /**
+         * Connects to an SFTP server
+         * @param sessionId The session ID of the SFTP server
+         */
         connect: async (sessionId: string): Promise<{ sessionId: string | null, error: string | null }> => {
             return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.ESTABLISH_CONNECTION, sessionId)
         },
-        homeDir: async (sessionUid: string): Promise<string> => {
-            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.HOME_DIR, sessionUid)
+
+        /**
+         * Gets the home directory of the SFTP server
+         * @param sessionId The session ID of the SFTP server
+         */
+        homeDir: async (sessionId: string): Promise<string> => {
+            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.HOME_DIR, sessionId)
         },
-        listFiles: async (sessionUid: string, targetPath: string): Promise<IFileEntry[]> => {
-            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.LIST_FILES, sessionUid, targetPath)
+
+        /**
+         * Lists files in a directory
+         * @param sessionId The session ID of the SFTP server
+         * @param targetPath The path to list files in
+         */
+        listFiles: async (sessionId: string, targetPath: string): Promise<IFileEntry[]> => {
+            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.LIST_FILES, sessionId, targetPath)
         }
     }
 })

@@ -141,6 +141,9 @@ export interface ISSHSessionSafe {
 
     /** The alias to connect with */
     alias?: string;
+
+    /** The connection status of the session */
+    status: TConnectionStatus;
 }
 
 /**

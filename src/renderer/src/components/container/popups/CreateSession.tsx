@@ -7,12 +7,13 @@ import { Form, FormCheckbox, FormInput, FormRow, FormTextArea } from "@renderer/
 import { FormEvent, useCallback, useContext }                   from "react";
 import { XIcon }                                                from "lucide-react";
 import { PopupContext }                                         from "@renderer/contexts/PopupContext";
+import { ISSHSessionSafe }                                      from "@/common/ssh-definitions";
 
 /**
  * Popup to add a new session
  * @constructor
  */
-export function CreateSession() {
+export function CreateSession(props: { session?: ISSHSessionSafe }) {
     const { setPopup } = useContext(PopupContext);
 
     const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
@@ -44,21 +45,25 @@ export function CreateSession() {
                  style={{
                      gridTemplateColumns: '60px 1fr 60px',
                  }}>
-                <h3 className="text-center col-start-2 text-xl font-bold font-satoshi">Add New Session</h3>
+                <h3 className="text-center col-start-2 text-xl font-bold font-satoshi">
+                    {props.session ? "Edit Session" : "Create New Session"}
+                </h3>
                 <XIcon size={32} className="justify-self-end rounded-full hover:bg-hover p-1"
                        onClick={() => setPopup(undefined)}/>
             </div>
             <Form onSubmit={handleSubmit}>
                 <FormRow>
                     <FormInput label="Host Address" type="text" name="host"
+                               defaultValue={props.session?.hostAddress ?? ''}
                                required
                     />
                     <FormInput label="Port" type="number" min={0} max={1 << 16}
                                className="text-center"
-                               defaultValue="22"
+                               defaultValue={props.session?.port ?? 22}
                                name="port"/>
                 </FormRow>
                 <FormInput label="Username" type="text" name="username"
+                           defaultValue={props.session?.username ?? ''}
                            required
                 />
                 <FormInput label="Password (recommended)" type="password" name="password"/>
@@ -67,9 +72,12 @@ export function CreateSession() {
 
                 <FormInput label="Passphrase (optional)" type="password" name="passphrase"/>
 
-                <FormInput label="Alias (optional)" type="text" name="alias"/>
+                <FormInput label="Alias (optional)" type="text" name="alias"
+                           defaultValue={props.session?.alias ?? ''}
+                />
                 <FormCheckbox type="checkbox" label="Use fingerprint verification" name="fingerprint"/>
-                <FormInput value="Create Session" type="submit" className="hover:bg-hover cursor-pointer mt-2"/>
+                <FormInput value={props.session ? "Save Session" : "Create Session"} type="submit"
+                           className="hover:bg-hover cursor-pointer mt-2"/>
             </Form>
         </div>
     )
