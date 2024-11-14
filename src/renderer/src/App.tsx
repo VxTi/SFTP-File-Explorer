@@ -1,9 +1,9 @@
 import { useContext, useEffect } from "react";
 import { WindowContentContext } from "@renderer/contexts/WindowContentContext";
 import { NavigationContainer }  from "@renderer/components/container/Navigator";
-import { ContextMenuContext }   from "@renderer/hooks/ContextMenu";
-import EVENTS                    from "@/common/ipc-events.json";
-import { Settings }              from "@renderer/components/container/popups/Settings";
+import { ContextMenuContext } from "@renderer/hooks/ContextMenu";
+import EVENTS                 from "@/common/events.json";
+import { Settings }           from "@renderer/components/container/popups/Settings";
 import { PopupContext }          from "@renderer/contexts/PopupContext";
 import { setTheme }              from "@renderer/services/ThemeService";
 
@@ -26,7 +26,9 @@ export function App(): JSX.Element {
     }, []);
 
     return (
-        <div className="flex flex-col justify-start items-stretch grow">
+        <div className="flex flex-col justify-start items-stretch grow" style={{
+            textRendering: 'optimizeLegibility',
+        }}>
             {contextMenu}
             <NavigationContainer position='header' trulyIsTheNavigator/>
             {content}

@@ -3,8 +3,8 @@ import './services/Services'
 import { createRoot }            from 'react-dom/client'
 import { App }                   from './App'
 import { WindowContentProvider } from "@renderer/contexts/WindowContentContext";
-import { PopupProvider }         from "@renderer/contexts/PopupContext";
-import { SFTPContextProvider }   from "@renderer/contexts/SFTPContextProvider";
+import { PopupProvider }       from "@renderer/contexts/PopupContext";
+import { SFTPContextProvider } from "@renderer/contexts/SFTPContext";
 
 import './styles/theme.css'
 import './styles/index.css'

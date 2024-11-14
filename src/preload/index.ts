@@ -4,7 +4,7 @@ import { IFileEntry }    from "@/common/file-information";
 import { ISSHSession }   from "@/common/ssh-definitions";
 import path              from "node:path";
 
-import EVENTS from '@/common/ipc-events.json';
+import EVENTS from '@/common/events.json';
 
 contextBridge.exposeInMainWorld('electron', electronAPI);
 contextBridge.exposeInMainWorld('api', {
@@ -15,7 +15,7 @@ contextBridge.exposeInMainWorld('api', {
         list: async () => {
             return await electronAPI.ipcRenderer.invoke(EVENTS.SESSIONS.LIST)
         },
-        create: async (session: ISSHSession) => {
+        create: async (session: Omit<ISSHSession, 'uid'>) => {
             await electronAPI.ipcRenderer.invoke(EVENTS.SESSIONS.CREATE, session)
         },
         remove: async (sessionId: string) => {
@@ -44,8 +44,8 @@ contextBridge.exposeInMainWorld('api', {
                 return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.LIST_SHELLS, sessionUid)
             }
         },
-        connect: async (session: ISSHSession): Promise<{ sessionId: string | null, error: string | null }> => {
-            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.ESTABLISH_CONNECTION, session)
+        connect: async (sessionId: string): Promise<{ sessionId: string | null, error: string | null }> => {
+            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.ESTABLISH_CONNECTION, sessionId)
         },
         homeDir: async (sessionUid: string): Promise<string> => {
             return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.HOME_DIR, sessionUid)

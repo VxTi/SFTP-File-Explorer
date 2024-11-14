@@ -4,10 +4,10 @@
  * @date Created on Wednesday, November 13 - 20:40
  */
 
-export function LoadingRotor() {
+export function LoadingRotor(props: { className?: string }) {
     return (
         <svg aria-hidden="true"
-             className="w-8 h-8 text-bg-primary animate-spin fill-special place-self-center grow"
+             className={`w-8 h-8 text-bg-primary animate-spin fill-special ${props.className ?? ''}`}
              viewBox="0 0 100 101" fill="none"
              xmlns="http://www.w3.org/2000/svg">
             <path

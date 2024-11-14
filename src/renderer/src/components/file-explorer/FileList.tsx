@@ -28,7 +28,7 @@ export function FileExplorerOrigin(props: { client: IClient }) {
     return (
         <div className="flex flex-col justify-start items-stretch grow relative">
             {
-                !files ? <LoadingRotor/> : (
+                !files ? <LoadingRotor className="place-self-center grow"/> : (
                     <div
                         className="absolute hide-scrollbar left-0 top-0 w-full h-full overflow-y-scroll flex flex-col justify-start items-stretch gap-0.5">
                         {props.client.cwd !== '/' &&

@@ -5,9 +5,8 @@
  */
 import { Form, FormCheckbox, FormInput, FormRow, FormTextArea } from "@renderer/components/interactive/Form";
 import { FormEvent, useCallback, useContext }                   from "react";
-import { XIcon }                                  from "lucide-react";
-import { PopupContext }                           from "@renderer/contexts/PopupContext";
-
+import { XIcon }                                                from "lucide-react";
+import { PopupContext }                                         from "@renderer/contexts/PopupContext";
 
 /**
  * Popup to add a new session
@@ -19,12 +18,24 @@ export function CreateSession() {
     const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        // TODO: Fix
         // Acquire values from form event
-        const target = event.currentTarget as HTMLFormElement;
-        const formData = new FormData(target);
+        const target     = event.currentTarget as HTMLFormElement;
+        const formData   = new FormData(target);
         const formObject = Object.fromEntries(formData.entries());
         console.log(formObject);
+        window.api.sessions.create(
+            {
+                hostAddress: formObject[ 'host' ] as string,
+                port: parseInt(formObject[ 'port' ] as string) ?? 22,
+                username: formObject[ 'username' ] as string,
+                password: formObject[ 'password' ] as string,
+                privateKey: formObject[ 'private-key' ] as string,
+                passphrase: formObject[ 'passphrase' ] as string,
+                alias: formObject[ 'alias' ] as string,
+                requiresFingerprintVerification: formObject[ 'fingerprint' ] === 'on',
+            }
+        );
+        setPopup(undefined);
     }, []);
 
     return (
@@ -47,11 +58,15 @@ export function CreateSession() {
                                defaultValue="22"
                                name="port"/>
                 </FormRow>
-                <FormInput label="Username" type="text" name="username"/>
-                <FormInput label="Password" type="password" name="password"/>
+                <FormInput label="Username" type="text" name="username"
+                           required
+                />
+                <FormInput label="Password (recommended)" type="password" name="password"/>
 
-                <FormTextArea name="private-key" placeholder="Private key (optional)" style={{ resize: 'none' }}/>
+                <FormTextArea name="private-key" label="Private key (optional)" style={{ resize: 'none' }}/>
+
                 <FormInput label="Passphrase (optional)" type="password" name="passphrase"/>
+
                 <FormInput label="Alias (optional)" type="text" name="alias"/>
                 <FormCheckbox type="checkbox" label="Use fingerprint verification" name="fingerprint"/>
                 <FormInput value="Create Session" type="submit" className="hover:bg-hover cursor-pointer mt-2"/>

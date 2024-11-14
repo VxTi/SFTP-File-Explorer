@@ -51,7 +51,7 @@ export function ActionBar(props: { client: IClient }) {
                 {isEditing ? (
                     <input
                         type="text"
-                        className='bg-transparent p-0.5 border-none text-primary outline-none mx-2'
+                        className='bg-transparent p-0.5 border-none w-full text-primary outline-none mx-2'
                         value={path}
                         onChange={(e) => setPath(e.target.value)}
                         onKeyDown={(e) => {
@@ -62,8 +62,8 @@ export function ActionBar(props: { client: IClient }) {
                             }
                         }}
                         onBlur={() => {
-                            setEditing(false);
                             props.client.setCwd(path);
+                            setEditing(false);
                         }}
                         autoFocus
                     />

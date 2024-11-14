@@ -4,18 +4,14 @@
  * @date Created on Wednesday, November 13 - 14:44
  */
 
-import { app, ipcMain }                                                 from "electron";
+import { ipcMain }                                                      from "electron";
 import { IShellMessage, IShellSession, ISSHSession, TConnectionStatus } from "@/common/ssh-definitions";
 import { IFileEntry }                                                   from "@/common/file-information";
 import { Client, ClientChannel, SFTPWrapper }                           from "ssh2";
 import { IpcMainInvokeEvent }                                           from "electron/main";
-
-import EVENTS from '@/common/ipc-events.json';
-import path   from "node:path";
-import fs     from "fs";
-
-
-const sessionsPath: string = path.join(app.getPath('userData'), 'sessions.json');
+import fs                                                               from "fs";
+import { sessionsPath } from "./SessionHandlers";
+import EVENTS           from '@/common/events.json';
 
 export interface IRegisteredSession {
     session: ISSHSession;
@@ -215,10 +211,11 @@ ipcMain.handle(EVENTS.SFTP.SHELL.DESTROY, (event, sessionId: string, shellId: st
  * Attempts to establish an SSH Connection with the remote server.
  * This will return the session object if the connection is successful.
  */
-ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, session: ISSHSession) => {
-    if ( RegisteredSessions.has(session.uid) )
-        return { sessionId: RegisteredSessions.get(session.uid)!.session.uid, error: null };
+ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, sessionId: string) => {
+    if ( !RegisteredSessions.has(sessionId) )
+        return { sessionId: null, error: 'Session not found.' };
 
+    const session = RegisteredSessions.get(sessionId)!.session;
     const client = new Client();
 
     const sessionObject: IRegisteredSession = {

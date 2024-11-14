@@ -33,12 +33,15 @@ export function FormRow(props: { children: ReactNode, className?: string }) {
 
 export function FormInput(props: any) {
     return (
-        <input
-            type={props.type ?? 'text'}
-            {...props}
-            placeholder={props.placeholder ?? props.label ?? ''}
-            className={`py-1 px-2 placeholder-text-secondary rounded-md grow focus:outline-none bg-secondary border-[1px] border-solid border-primary focus:border-theme-special ${props.className ?? ''}`}
-            onChange={(e) => props.onChange?.(e.target.value)}/>
+        <>
+            <label className="select-none">{props.label}</label>
+            <input
+                type={props.type ?? 'text'}
+                {...props}
+                placeholder={props.placeholder ?? ''}
+                className={`py-1 px-2 placeholder-text-secondary rounded-md grow focus:outline-none bg-secondary border-[1px] border-solid border-primary focus:border-theme-special ${props.className ?? ''}`}
+                onChange={(e) => props.onChange?.(e.target.value)}/>
+        </>
     )
 }
 
@@ -57,7 +60,8 @@ export function FormCheckbox(props: any) {
                            props.onChange?.(e.target.checked)
                        }}/>
                 {checked && (
-                    <CheckIcon strokeWidth={3} size={14} className="pointer-events-none row-start-1 col-start-1 text-special"/>
+                    <CheckIcon strokeWidth={3} size={14}
+                               className="pointer-events-none row-start-1 col-start-1 text-special"/>
                 )}
             </div>
             <span className="select-none">{props.label}</span>
@@ -67,10 +71,13 @@ export function FormCheckbox(props: any) {
 
 export function FormTextArea(props: any) {
     return (
-        <textarea
-            {...props}
-            placeholder={props.placeholder ?? props.label ?? ''}
-            className={`py-1 px-2 placeholder-text-secondary rounded-md grow focus:outline-none bg-secondary border-[1px] border-solid border-primary focus:border-theme-special ${props.className ?? ''}`}
-            onChange={(e) => props.onChange?.(e.target.value)}/>
+        <>
+            <label className="select-none">{props.label}</label>
+            <textarea
+                {...props}
+                placeholder={props.placeholder ?? ''}
+                className={`py-1 px-2 placeholder-text-secondary rounded-md grow focus:outline-none bg-secondary border-[1px] border-solid border-primary focus:border-theme-special ${props.className ?? ''}`}
+                onChange={(e) => props.onChange?.(e.target.value)}/>
+        </>
     )
 }

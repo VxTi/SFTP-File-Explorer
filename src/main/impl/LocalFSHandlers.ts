@@ -8,7 +8,7 @@ import { ipcMain }    from "electron";
 import fs             from 'fs'
 import path           from "node:path";
 import { IFileEntry } from "@/common/file-information";
-import EVENTS         from '@/common/ipc-events.json';
+import EVENTS         from '@/common/events.json';
 
 ipcMain.handle(EVENTS.LOCAL_FS.LIST_FILES, async (_, targetPath: string) => {
     const dirEntries = await fs.promises.readdir(targetPath, { withFileTypes: true });

@@ -38,7 +38,7 @@ export function Renamable(props: any) {
                         setIsRenaming(false);
                         props.onRename?.(e.target.value);
                     }}
-                    className={`bg-transparent outline-none min-w-0 w-auto appearance-none border-none ${props.className ?? ''}`}
+                    className={`bg-transparent outline-none min-w-0 w-min appearance-none border-none ${props.className ?? ''}`}
                     value={value}
                 />) : (
                  <div className={props.className ?? ''} onClick={props.onClick}>{value}</div>

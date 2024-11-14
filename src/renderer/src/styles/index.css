@@ -822,6 +822,10 @@ video {
   height: 0.75rem;
 }
 
+.max-h-screen {
+  max-height: 100vh;
+}
+
 .min-h-1 {
   min-height: 0.25rem;
 }
@@ -880,6 +884,11 @@ video {
 
 .w-3 {
   width: 0.75rem;
+}
+
+.w-min {
+  width: -moz-min-content;
+  width: min-content;
 }
 
 .min-w-0 {
@@ -1105,6 +1114,10 @@ video {
   overflow: scroll;
 }
 
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
 .overflow-x-scroll {
   overflow-x: scroll;
 }
@@ -1326,6 +1339,11 @@ video {
   text-decoration-line: underline;
 }
 
+.antialiased {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .placeholder-text-secondary::-moz-placeholder {
   color: var(--color-text-secondary);
 }
@@ -1411,8 +1429,20 @@ video {
   --tw-enter-opacity: 0.1;
 }
 
+.zoom-in-95 {
+  --tw-enter-scale: .95;
+}
+
+.zoom-in-\[97\] {
+  --tw-enter-scale: 97;
+}
+
 .slide-in-from-bottom-3 {
   --tw-enter-translate-y: 0.75rem;
+}
+
+.slide-in-from-bottom-2 {
+  --tw-enter-translate-y: 0.5rem;
 }
 
 .duration-100 {
@@ -1429,6 +1459,26 @@ video {
 
 .duration-500 {
   animation-duration: 500ms;
+}
+
+.placeholder\:-translate-y-2::-moz-placeholder {
+  --tw-translate-y: -0.5rem;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.placeholder\:-translate-y-2::placeholder {
+  --tw-translate-y: -0.5rem;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.placeholder\:-translate-y-3::-moz-placeholder {
+  --tw-translate-y: -0.75rem;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.placeholder\:-translate-y-3::placeholder {
+  --tw-translate-y: -0.75rem;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .after\:absolute::after {

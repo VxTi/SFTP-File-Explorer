@@ -4,11 +4,15 @@
  * @date Created on Thursday, November 14 - 10:56
  */
 
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
 
-import EVENTS                           from '@/common/ipc-events.json';
+import EVENTS                           from '@/common/events.json';
 import { ISSHSession, ISSHSessionSafe } from "@/common/ssh-definitions";
 import { RegisteredSessions }           from "./SFTPHandlers";
+import fs                               from "fs";
+import path                             from "node:path";
+
+export const sessionsPath = path.join(app.getPath('userData'), 'sessions.json');
 
 /**
  * Create a session ID.
@@ -34,7 +38,9 @@ function excludeSensitiveProperties(sessionId: string): ISSHSessionSafe | null {
         sessionId: session.session.uid,
         username: session.session.username,
         hostAddress: session.session.hostAddress,
-        port: session.session.port ?? 22
+        port: session.session.port ?? 22,
+        alias: session.session.alias,
+        requiresFingerprintVerification: session.session.requiresFingerprintVerification
     } as ISSHSessionSafe;
 }
 
@@ -64,6 +70,20 @@ ipcMain.handle(EVENTS.SESSIONS.LIST, (): ISSHSessionSafe[] => {
 ipcMain.handle(EVENTS.SESSIONS.REMOVE, (event, sessionUID: string) => {
     RegisteredSessions.delete(sessionUID);
     event.sender.send(EVENTS.SESSIONS.REMOVED);
+
+    let sessions: ISSHSession[] = [];
+    if ( !fs.existsSync(sessionsPath) ) {
+        fs.writeFileSync(sessionsPath, '[]');
+    }
+    else {
+        try {
+            sessions = JSON.parse(fs.readFileSync(sessionsPath).toString());
+        } catch (e) {
+            sessions = [];
+        }
+    }
+    sessions = sessions.filter((session) => session.uid !== sessionUID);
+    fs.writeFileSync(sessionsPath, JSON.stringify(sessions));
 });
 
 /**
@@ -76,5 +96,21 @@ ipcMain.handle(EVENTS.SESSIONS.CREATE, (event, session: ISSHSession) => {
         status: 'idle',
         shells: new Map()
     });
+    let sessions: ISSHSession[] = [];
+    if ( !fs.existsSync(sessionsPath) ) {
+        fs.writeFileSync(sessionsPath, '[]');
+    }
+    else {
+        try {
+            sessions = JSON.parse(fs.readFileSync(sessionsPath).toString());
+            console.error(sessions);
+        } catch (e) {
+            sessions = [];
+        }
+    }
+
+    sessions.push(session);
+    fs.writeFileSync(sessionsPath, JSON.stringify(sessions));
+
     event.sender.send(EVENTS.SESSIONS.CREATED, sessionId);
 });

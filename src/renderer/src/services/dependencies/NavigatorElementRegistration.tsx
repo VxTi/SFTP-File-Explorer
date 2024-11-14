@@ -7,7 +7,7 @@
 
 import { registerNavigatorElement }                 from "@renderer/services/NavigatorElementRegistrator";
 import { Columns2Icon, SettingsIcon, TerminalIcon } from "lucide-react";
-import EVENTS                                       from "@/common/ipc-events.json";
+import EVENTS                                       from "@/common/events.json";
 
 registerNavigatorElement('terminal', {
     icon: <TerminalIcon size={16} className="text-primary"/>,

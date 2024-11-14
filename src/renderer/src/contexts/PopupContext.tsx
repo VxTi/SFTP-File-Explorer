@@ -3,10 +3,7 @@
  * @author Luca Warmenhoven
  * @date Created on Monday, November 04 - 10:26
  */
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useRef, useState } from "react";
-import {
-    useClickOutside
-}                                                                                                      from "@renderer/hooks/ClickOutside";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
 
 type PopupType = {
     uid: string,
@@ -72,15 +69,9 @@ function PopupWrapper() {
 }
 
 function PopupBody(props: { children: ReactNode }) {
-
-    const { setPopup } = useContext(PopupContext);
-    const popupRef     = useRef<HTMLDivElement>(null);
-    useClickOutside(popupRef, () => setPopup(undefined));
-
     return (
         <div
-            className="flex flex-col justify-start items-stretch bg-primary border-[1px] border-primary p-4 z-20 animate-in slide-in-from-bottom-3 fade-in-10 duration-500"
-            ref={popupRef}>
+            className="flex flex-col justify-start items-stretch max-h-screen bg-primary border-[1px] border-primary p-4 z-20 animate-in slide-in-from-bottom-2 zoom-in-95 fade-in-10 duration-300">
             {props.children}
         </div>
     )

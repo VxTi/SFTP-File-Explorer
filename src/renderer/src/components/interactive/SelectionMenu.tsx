@@ -25,18 +25,21 @@ export interface ISelectionMenuProps {
     title: string;
     options: ISelectionMenuOption[];
     onSelect: (entry: ISelectionMenuOption) => void;
+    current?: string;
 }
 
 export function SelectionMenu(props: ISelectionMenuProps) {
 
-    const [ selectedIdx, setSelectedIdx ] = useState<number>(0);
+    const initial = props.options.findIndex(option => option.value === props.current);
+
+    const [ selectedIdx, setSelectedIdx ] = useState<number>(initial === -1 ? 0 : initial);
     const [ expanded, setExpanded ]       = useState<boolean>(false);
     const containerRef                    = useRef<HTMLDivElement>(null);
     useClickOutside(containerRef, () => setExpanded(false), expanded);
 
     return (
         <div
-            className="relative flex flex-row justify-start items-center gap-3 bg-hover rounded-lg py-1 px-2 border-[1px] border-secondary text-primary"
+            className="relative flex flex-row justify-start items-center gap-3 bg-hover rounded-lg py-1 px-2 border-[1px] border-secondary text-primary cursor-pointer"
             onClick={() => setExpanded( !expanded)}>
             <span>{props.title}</span>
             <div className="h-full w-full">

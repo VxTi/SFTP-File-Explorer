@@ -8,10 +8,9 @@ import { BookOpenIcon, ChevronRightIcon, PlusIcon, SettingsIcon, WrenchIcon } fr
 
 import { PopupContext }       from "@renderer/contexts/PopupContext";
 import { ResizableContainer } from "@renderer/components/container/ResizableContainer";
-import { CreateSession }      from "@renderer/components/container/popups/CreateSession";
-import { ISSHSession }        from "@/common/ssh-definitions";
-import { SFTPContext }        from "@renderer/contexts/SFTPContextProvider";
-import EVENTS                 from "@/common/ipc-events.json";
+import { CreateSession } from "@renderer/components/container/popups/CreateSession";
+import { SFTPContext } from "@renderer/contexts/SFTPContext";
+import EVENTS          from "@/common/events.json";
 
 export interface SidebarItemProps {
     expanded?: boolean;
@@ -42,7 +41,6 @@ const SidebarContent: SidebarItemProps[] = [
 
 export function Sidebar() {
 
-    const [ pinnedHosts, setPinnedHosts ] = useState<ISSHSession[]>([]);
     const [ visible, setVisible ]         = useState<boolean>(true);
     const [ sidebarSize, setSidebarSize ] = useState<number>(300);
 
@@ -59,28 +57,8 @@ export function Sidebar() {
         }
     }, [ visible ]);
 
-    useEffect(() => {
-
-        // TODO: Add retrieval of hosts from main process
-
-        const pinnedHosts = localStorage.getItem("pinnedHosts");
-        if ( pinnedHosts ) {
-            setPinnedHosts(JSON.parse(pinnedHosts));
-            return;
-        }
-        setPinnedHosts(
-            [ {
-                uid: "1",
-                hostAddress: "oege.ie.hva.nl",
-                username: "warmenl1",
-                password: "n.vDECZo4B.T32",
-                port: 22,
-            } ]
-        );
-    }, []);
-
-    const { setPopup }  = useContext(PopupContext);
-    const { authorize } = useContext(SFTPContext);
+    const { setPopup }            = useContext(PopupContext);
+    const { authorize, sessions } = useContext(SFTPContext);
 
     if ( !visible )
         return null;
@@ -103,9 +81,9 @@ export function Sidebar() {
                 <SidebarSection title="Recent Sessions"
                                 expanded={true}
                                 icon={<WrenchIcon size={20}/>}
-                                childNodes={pinnedHosts.map((host) => ({
-                                    title: host.alias ?? (`sftp://${host.hostAddress}:${host.port}`),
-                                    onClick: () => authorize(host),
+                                childNodes={sessions.map((host) => ({
+                                    title: host.alias || (`sftp://${host.hostAddress}:${host.port}`),
+                                    onClick: () => authorize(host.sessionId),
                                 }))}/>
 
                 {SidebarContent.map((section, index) => (

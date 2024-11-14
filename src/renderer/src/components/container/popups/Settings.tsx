@@ -21,6 +21,7 @@ export function Settings() {
                        onClick={() => setPopup(undefined)}/>
             </div>
             <SelectionMenu title="Theme"
+                           current={localStorage.getItem('theme') ?? ''}
                            options={[ {
                                title: 'System Dark',
                                value: ''

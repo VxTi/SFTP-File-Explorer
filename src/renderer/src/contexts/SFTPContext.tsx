@@ -3,8 +3,10 @@
  * @author Luca Warmenhoven
  * @date Created on Wednesday, November 13 - 13:08
  */
-import { IClient, IShell, ISSHSession }                                                         from "@/common/ssh-definitions";
+import { IClient, IShell, ISSHSessionSafe }                                                     from "@/common/ssh-definitions";
 import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useEffect, useState } from "react";
+import EVENTS
+                                                                                                from "@/common/events.json";
 
 type SFTPConnectionStatus = 'connected' | 'connecting' | 'disconnected';
 
@@ -16,13 +18,15 @@ interface SFTPContextType {
     status: SFTPConnectionStatus,
     setStatus: Dispatch<SetStateAction<SFTPConnectionStatus>>,
     sessionId: string | null,
-    authorize: (session: ISSHSession) => void,
+    sessions: ISSHSessionSafe[],
+    authorize: (sessionId: string) => void,
     createShell: () => Promise<string | null>
 }
 
 export const SFTPContext = createContext<SFTPContextType>(
     {
         authorize: () => 0,
+        sessions: [],
         clients: { local: null, remote: null },
         status: 'disconnected', setStatus: () => 0,
         sessionId: null, createShell: async () => null
@@ -38,6 +42,8 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
     const [ localClient, setLocalClient ]   = useState<IClient | null>(null);
     const [ remoteClient, setRemoteClient ] = useState<IClient | null>(null);
 
+    const [ sessions, setSessions ] = useState<ISSHSessionSafe[]>([]);
+
     const [ shells, setShells ]       = useState<IShell[]>([]);
     const [ sessionId, setSessionId ] = useState<string | null>(null);
     const [ status, setStatus ]       = useState<SFTPConnectionStatus>('disconnected');
@@ -45,16 +51,25 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
     const [ localCwd, setLocalCwd ]   = useState<string>(window.api.fs.localHomeDir);
     const [ remoteCwd, setRemoteCwd ] = useState<string>('/');
 
+    useEffect(() => {
+        window.api.sessions.list()
+              .then(setSessions);
+
+        window.api.on(EVENTS.SESSIONS.CREATED, () => {
+            window.api.sessions.list()
+                  .then(setSessions);
+        });
+    }, []);
 
     /**
      * Attempts to authorize a session with the given credentials
      * @param session - The session to authorize
      */
-    const authorize = useCallback(async (session: ISSHSession) => {
+    const authorize = useCallback(async (sessionId0: string) => {
         setStatus('connecting');
-        const { error, sessionId } = await window.api.sftp.connect(session);
+        const { error, sessionId } = await window.api.sftp.connect(sessionId0);
         if ( error || !sessionId ) {
-            console.error('Failed to connect', error);
+            console.error('Failed to connect', error, sessionId);
             setStatus('disconnected');
             return;
         }
@@ -117,10 +132,8 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
 
     return (
         <SFTPContext.Provider value={{
-            clients: {
-                local: localClient,
-                remote: remoteClient
-            },
+            clients: { local: localClient, remote: remoteClient },
+            sessions,
             authorize, createShell, sessionId,
             status, setStatus
         }}>

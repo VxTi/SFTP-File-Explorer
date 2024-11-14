@@ -9,6 +9,7 @@ import { ActiveSession }          from "@renderer/components/file-explorer/Activ
 import { PopupContext }           from "@renderer/contexts/PopupContext";
 import { useContext }             from "react";
 import { CreateSession }          from "@renderer/components/container/popups/CreateSession";
+import { SFTPContext }            from "@renderer/contexts/SFTPContext";
 
 /**
  * ActiveSessionsHeader component.
@@ -18,13 +19,17 @@ import { CreateSession }          from "@renderer/components/container/popups/Cr
 export function ActiveSessionsHeader() {
 
     const { setPopup } = useContext(PopupContext);
+    const { sessions } = useContext(SFTPContext);
 
     return (
         <div className="flex flex-row justify-start items-center border-b-[1px] border-primary gap-0.5">
             <CloudOffIcon size={26} className={InteractiveIconClasses}/>
-            <ActiveSession displayName="Test Session"/>
+            {sessions
+                .filter(session => session.status === 'connected')
+                .map(session => <ActiveSession
+                    displayName={session.alias || (session.hostAddress + ':' + session.port)}/>)}
             <PlusIcon size={26} className={InteractiveIconClasses}
-                      onClick={() => setPopup({ content: <CreateSession />, uid: 'create-session'})}/>
+                      onClick={() => setPopup({ content: <CreateSession/>, uid: 'create-session' })}/>
         </div>
     )
 }

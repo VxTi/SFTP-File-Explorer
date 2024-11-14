@@ -9,12 +9,11 @@ import { FitAddon }                                    from "@xterm/addon-fit";
 import { ResizableContainer }                          from "@renderer/components/container/ResizableContainer";
 import { useMap }                                      from "@renderer/hooks/UseMap";
 import { Renamable }                                   from "@renderer/components/interactive/Renamable";
-import { DragDropContext, Draggable, Droppable }       from "@hello-pangea/dnd";
 import { InteractiveIconClasses, InteractiveIconSize } from "@renderer/components/Icons";
 import { MaximizeIcon, MinimizeIcon, PlusIcon, XIcon } from "lucide-react";
-import { SFTPContext }                                 from "@renderer/contexts/SFTPContextProvider";
-import { IShellMessage }                               from "@/common/ssh-definitions";
-import EVENTS                                          from "@/common/ipc-events.json";
+import { SFTPContext }                                 from "@renderer/contexts/SFTPContext";
+import { IShellMessage } from "@/common/ssh-definitions";
+import EVENTS            from "@/common/events.json";
 import '../../styles/xterm-styles.css';
 
 /**
@@ -31,7 +30,7 @@ const defaultTerminal = new Terminal(
         lineHeight: 1.3,
         smoothScrollDuration: 100,
         scrollback: 1000,
-        scrollSensitivity: 2,
+        scrollSensitivity: 3,
         fontFamily: 'Menlo, Monaco, JetBrains Mono, monospace',
         fontSize: 14,
         theme: {
@@ -170,41 +169,20 @@ export function TerminalContainer() {
             <div className="relative w-full h-full overflow-x-scroll">
                 <div
                     className="absolute left-0 top-0 w-full h-full flex flex-row justify-start items-center hide-scrollbar">
-                    <DragDropContext onDragEnd={() => void 0}>
-                        {Array.from(terminalSessions).map(([ sessionId, sessionName ], idx) => (
-                            <Droppable direction='horizontal' droppableId={sessionId} key={idx}>
-                                {(droppableProvided) => (
-                                    <div ref={droppableProvided.innerRef}
-                                         {...droppableProvided.droppableProps}
-                                         className="relative flex flex-row justify-start items-center gap-1"
-                                    >
-                                        <Draggable draggableId={sessionName} index={idx}>
-                                            {(provided) => (
-                                                <div
-                                                    className={`rounded-lg flex my-0.5 mx-1 flex-row justify-center items-center gap-2 py-1 px-4 group hover:bg-hover ${(sessionId === currentTerminalSessionID) ? 'bg-secondary' : 'bg-primary'}`}
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                >
-                                                    <Renamable
-                                                        className="text-secondary group-hover:text-secondary-hover text-sm hover:cursor-pointer text-nowrap"
-                                                        onClick={() => setCurrentTerminalSessionID(sessionId)}
-                                                        initialValue={sessionName}
-                                                    />
-                                                    <div className="hover:brightness-110"
-                                                         onClick={() => window.api.sftp.shell.destroy(sessionId)}>
-                                                        <XIcon size={16}/>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                        {droppableProvided.placeholder}
-                                        <div className="absolute left-0 top-0 w-1 h-full bg-transparent"/>
-                                    </div>
-                                )}
-                            </Droppable>
-                        ))}
-                    </DragDropContext>
+                    {Array.from(terminalSessions).map(([ sessionId, sessionName ], idx) => (
+                        <div key={idx}
+                            className={`rounded-lg flex my-0.5 mx-1 flex-row justify-center items-center gap-2 py-1 px-4 group hover:bg-hover ${(sessionId === currentTerminalSessionID) ? 'bg-secondary' : 'bg-primary'}`}>
+                            <Renamable
+                                className="text-secondary group-hover:text-secondary-hover text-sm hover:cursor-pointer text-nowrap"
+                                onClick={() => setCurrentTerminalSessionID(sessionId)}
+                                initialValue={sessionName}
+                            />
+                            <div className="hover:brightness-110"
+                                 onClick={() => window.api.sftp.shell.destroy(sessionId)}>
+                                <XIcon size={16}/>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
             <PlusIcon className={InteractiveIconClasses}

@@ -1,6 +1,6 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { IFileEntry }  from "@/common/file-information";
-import { ISSHSession } from "@/common/ssh-definitions";
+import { IFileEntry }                   from "@/common/file-information";
+import { ISSHSession, ISSHSessionSafe } from "@/common/ssh-definitions";
 
 declare global {
     interface Window {
@@ -19,13 +19,13 @@ declare global {
                     exec: (sessionUid: string, shellUid: string, command: string) => Promise<void>,
                     listShells: (sessionUid: string) => Promise<string[]>
                 },
-                connect: (session: ISSHSession) => Promise<{ error: null | string, sessionId: string | null }>,
+                connect: (sessionId: string) => Promise<{ error: null | string, sessionId: string | null }>,
                 homeDir: (sessionUid: string) => Promise<string>,
                 listFiles: (sessionUid: string, targetPath: string) => Promise<IFileEntry[]>
             },
             sessions: {
-                list: () => Promise<ISSHSession[]>,
-                create: (session: ISSHSession) => Promise<void>,
+                list: () => Promise<ISSHSessionSafe[]>,
+                create: (session: Omit<ISSHSession, 'uid'>) => Promise<void>,
                 remove: (sessionId: string) => Promise<void>
             }
         }
