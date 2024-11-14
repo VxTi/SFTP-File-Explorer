@@ -1,0 +1,80 @@
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url('../resources/font/JetBrainsMono-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Satoshi';
+    src: url('../resources/font/Satoshi Medium.ttf') format('truetype');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Satoshi';
+    src: url('../resources/font/Satoshi Bold.ttf') format('truetype');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Menlo';
+    src: url('../resources/font/Menlo-Regular.ttf') format('truetype');
+    font-weight: 400;
+}
+
+:root {
+    --color-background: #0f0f0f;
+
+    --color-primary: #141414;
+    --color-text-primary: #c0c8d7;
+    --color-border: #262626;
+
+    --color-primary-hover: #1a1a1a;
+    --color-text-primary-hover: #c0c8d7;
+    --color-border-primary-hover: #333;
+
+    --color-secondary: #1e1e1e;
+    --color-text-secondary: #9096a2;
+    --color-text-secondary-hover: #c0c8d7;
+    --color-border-secondary: #333;
+
+    --color-tertiary: #2a2a2a;
+
+    --color-special: #646cff;
+    --color-text-special: #646cff;
+}
+
+.font-menlo {
+    font-family: 'Menlo', monospace;
+}
+
+.font-satoshi {
+    font-family: 'Satoshi', sans-serif;
+}
+
+.font-jb-mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scrollbar-color: transparent transparent;
+    scrollbar-shadow-color: transparent;
+    -ms-scrollbar-shadow-color: transparent;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}

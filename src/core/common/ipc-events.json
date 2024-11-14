@@ -1,0 +1,34 @@
+{
+    "SESSIONS": {
+        "LIST": "sessions::list",
+        "INFO": "sessions::info",
+        "CREATE": "sessions::create",
+        "CREATED": "sessions::created",
+        "REMOVE": "sessions::remove",
+        "REMOVED": "sessions::removed"
+    },
+    "LOCAL_FS": {
+        "LIST_FILES": "local-fs::list-files",
+        "HOME_DIRECTORY": "local-fs::home-directory"
+    },
+    "SFTP": {
+        "SHELL": {
+            "CREATE": "sftp::shell-create",
+            "CREATED": "sftp::shell-created",
+            "DESTROY": "sftp::shell-destroy",
+            "MESSAGE": "sftp::shell-message",
+            "ERROR": "sftp::shell-error",
+            "LIST_SHELLS": "sftp::list-shells",
+            "EXEC": "sftp::shell-execute"
+        },
+        "LIST_FILES": "sftp::list-files",
+        "HOME_DIR": "sftp::home-dir",
+        "ESTABLISH_CONNECTION": "sftp::establish-connection",
+        "CONNECTION_REFUSED": "sftp::connection-refused"
+    },
+    "RENDERER": {
+        "SHOW_SETTINGS": "renderer::show-settings",
+        "TOGGLE_TERMINAL": "renderer::toggle-terminal",
+        "TOGGLE_SIDEBAR": "renderer::toggle-sidebar"
+    }
+}

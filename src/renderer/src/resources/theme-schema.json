@@ -1,0 +1,96 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "SFTP Themes Schema",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "name",
+            "colors"
+        ],
+        "properties": {
+            "name": {
+                "type": "string",
+                "description": "The name of the theme. This name will be displayed in the theme selection dropdown."
+            },
+            "colors": {
+                "description": "The colors of the theme. The colors must be CSS compatible.",
+                "type": "object",
+                "required": [
+                    "backgroundColor",
+                    "primaryColor",
+                    "primaryTextColor",
+                    "primaryBorderColor",
+                    "primaryHoverColor",
+                    "primaryTextHoverColor",
+                    "primaryBorderHoverColor",
+                    "secondaryColor",
+                    "secondaryTextColor",
+                    "secondaryBorderColor",
+                    "secondaryTextHoverColor",
+                    "tertiaryColor",
+                    "specialColor",
+                    "specialTextColor"
+                ],
+                "properties": {
+                    "backgroundColor": {
+                        "type": "string",
+                        "description": "The background color of the theme."
+                    },
+                    "primaryColor": {
+                        "type": "string",
+                        "description": "The primary color of the theme."
+                    },
+                    "primaryTextColor": {
+                        "type": "string",
+                        "description": "The primary text color of the theme."
+                    },
+                    "primaryBorderColor": {
+                        "type": "string",
+                        "description": "The primary border color of the theme."
+                    },
+                    "primaryHoverColor": {
+                        "type": "string",
+                        "description": "The primary hover color of the theme."
+                    },
+                    "primaryTextHoverColor": {
+                        "type": "string",
+                        "description": "The primary text hover color of the theme."
+                    },
+                    "primaryBorderHoverColor": {
+                        "type": "string",
+                        "description": "The primary border hover color of the theme."
+                    },
+                    "secondaryColor": {
+                        "type": "string",
+                        "description": "The secondary color of the theme."
+                    },
+                    "secondaryTextColor": {
+                        "type": "string",
+                        "description": "The secondary text color of the theme."
+                    },
+                    "secondaryBorderColor": {
+                        "type": "string",
+                        "description": "The secondary border color of the theme."
+                    },
+                    "secondaryTextHoverColor": {
+                        "type": "string",
+                        "description": "The secondary text hover color of the theme."
+                    },
+                    "tertiaryColor": {
+                        "type": "string",
+                        "description": "The tertiary color of the theme."
+                    },
+                    "specialColor": {
+                        "type": "string",
+                        "description": "The special color of the theme."
+                    },
+                    "specialTextColor": {
+                        "type": "string",
+                        "description": "The special text color of the theme."
+                    }
+                }
+            }
+        }
+    }
+}
