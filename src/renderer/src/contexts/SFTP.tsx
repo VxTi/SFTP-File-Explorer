@@ -78,7 +78,7 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
      */
     const authorize = useCallback(async (sessionId0: string) => {
 
-        if ( status === 'connecting' || status === 'connected' || sessionId === sessionId0 )
+        if ( status === 'connecting' || sessionId === sessionId0 )
             return;
 
         console.log(sessionId0, sessionId);

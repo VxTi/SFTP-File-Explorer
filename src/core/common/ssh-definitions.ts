@@ -175,7 +175,7 @@ export interface ISSHSession {
     /**
      * The private key to connect with (optional)
      */
-    readonly privateKey?: string;
+    readonly privateKeyFile?: string;
 
     /**
      * The passphrase for the private key (optional)

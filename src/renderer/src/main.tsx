@@ -1,22 +1,19 @@
-import './services/Services'
+import '@renderer/util/services/Services'
 
-import { createRoot }            from 'react-dom/client'
-import { App }                   from './App'
-import { WindowContentProvider } from "@renderer/contexts/WindowContent";
-import { PopupProvider }         from "@renderer/contexts/Popups";
-import { SFTPContextProvider }   from "@renderer/contexts/SFTP";
-
-import './styles/theme.css'
-import './styles/index.css'
+import { createRoot }          from 'react-dom/client'
+import { App }                 from './App'
+import { PopupProvider }       from "@renderer/contexts/Popups";
+import { SFTPContextProvider } from "@renderer/contexts/SFTP";
 import { ContextMenuProvider } from "@renderer/contexts/ContextMenu";
+
+import '@renderer/resources/styles/theme.css'
+import '@renderer/resources/styles/index.css'
 
 createRoot(document.getElementById('root') as HTMLElement).render(
     <ContextMenuProvider>
         <PopupProvider>
             <SFTPContextProvider>
-                <WindowContentProvider>
-                    <App/>
-                </WindowContentProvider>
+                <App/>
             </SFTPContextProvider>
         </PopupProvider>
     </ContextMenuProvider>

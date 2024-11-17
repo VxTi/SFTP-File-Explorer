@@ -3,7 +3,7 @@
  * @author Luca Warmenhoven
  * @date Created on Thursday, November 07 - 16:35
  */
-import { NavigatorElementPosition, NavigatorElements } from "@renderer/services/NavigatorElementRegistrator";
+import { NavigatorElementPosition, NavigatorElements } from "@renderer/util/services/NavigatorElementRegistrator";
 import { MenuItemElement }                             from "@renderer/components/interactive/MenuItemElement";
 
 const PositionSpecificStyling: Record<NavigatorElementPosition, string> = {

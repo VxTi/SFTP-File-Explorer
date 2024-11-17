@@ -3,13 +3,13 @@
  * @author Luca Warmenhoven
  * @date Created on Sunday, November 10 - 14:12
  */
-import { Form, FormCheckbox, FormInput }                from "@renderer/components/interactive/Form";
-import { FormEvent, useCallback, useContext, useState } from "react";
-import { PopupContext }                                 from "@renderer/contexts/Popups";
-import { ISSHSessionSafe }                              from "@/common/ssh-definitions";
-import { SFTPContext }                                  from "@renderer/contexts/SFTP";
-import { PopupHeader }                                  from "@renderer/components/popups/PopupHeader";
-import { FilePlus2 }                                    from "lucide-react";
+import { Form, FormCheckbox, FormInput }                        from "@renderer/components/interactive/Form";
+import { FormEvent, useCallback, useContext, useRef, useState } from "react";
+import { PopupContext }                                         from "@renderer/contexts/Popups";
+import { ISSHSessionSafe }                                      from "@/common/ssh-definitions";
+import { SFTPContext }                                          from "@renderer/contexts/SFTP";
+import { PopupHeader }                                          from "@renderer/components/popups/PopupHeader";
+import { FilePlus2 }                                            from "lucide-react";
 
 /**
  * Popup to add a new session
@@ -19,7 +19,10 @@ export function CreateSession(props: { session?: ISSHSessionSafe }) {
     const { setPopup } = useContext(PopupContext);
     const { sessions } = useContext(SFTPContext);
 
+    const [ selectedFile, setSelectedFile ] = useState<File | undefined>(undefined);
+
     const [ errorMessage, setErrorMessage ] = useState<string | undefined>(undefined);
+    const privateKeyFileInputRef            = useRef<HTMLInputElement>(null);
 
     const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -50,7 +53,7 @@ export function CreateSession(props: { session?: ISSHSessionSafe }) {
                 port: parseInt(formObject[ 'port' ] as string) ?? 22,
                 username: formObject[ 'username' ] as string,
                 password: formObject[ 'password' ] as string,
-                privateKey: formObject[ 'private-key' ] as string,
+                privateKeyFile: (formObject[ 'private-key-file' ] as File).path,
                 passphrase: formObject[ 'passphrase' ] as string,
                 alias: formObject[ 'alias' ] as string,
                 requiresFingerprintVerification: formObject[ 'fingerprint' ] === 'on',
@@ -92,19 +95,18 @@ export function CreateSession(props: { session?: ISSHSessionSafe }) {
                         <FormInput label="Password" type="password" className="tracking-wider" name="password"/>
                     </div>
                 </div>
-                <div className="flex flex-col justify-start items-stretch gap-1">
+                <div className="flex flex-col justify-start items-start gap-1">
                     <label className="select-none">
                         Private key (optional)
                     </label>
-                    <div className="relative w-full flex">
-                        <textarea
-                            name="private-key"
-                            className={`py-1 px-2 placeholder-text-secondary grow rounded-md focus:outline-none bg-secondary border-[1px] border-solid border-primary focus:border-theme-special ${props.className ?? ''}`}
-                            style={{ resize: 'none' }}
+                    <div className="rounded-md bg-secondary flex border-[1px] border-primary justify-center items-center px-2 gap-1 py-0.5 hover:text-special transition-colors duration-200 cursor-pointer"
+                         onClick={() => privateKeyFileInputRef.current?.click()}>
+                        { selectedFile ? selectedFile.name : "Select file" }
+                        <FilePlus2 size={20}
+                                   className="p-0.5 cursor-pointer overflow-visible rounded-full"/>
+                        <input type='file' className="hidden" ref={privateKeyFileInputRef} name="private-key-file"
+                                 onChange={(event) => setSelectedFile(event.target.files?.[ 0 ])}
                         />
-                        <div className="absolute left-full top-0 -translate-x-full translate-y-full">
-                            <FilePlus2 size={18} className="text-primary"/>
-                        </div>
                     </div>
                 </div>
 

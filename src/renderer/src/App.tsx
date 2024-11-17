@@ -1,22 +1,20 @@
-import { useContext, useEffect } from "react";
-import { WindowContentContext }  from "@renderer/contexts/WindowContent";
-import { NavigationContainer }   from "@renderer/components/container/Navigator";
-import { ContextMenuContext }  from "@renderer/contexts/ContextMenu";
-import EVENTS                  from "@/common/events.json";
-import { Settings }     from "@renderer/components/popups/Settings";
-import { PopupContext } from "@renderer/contexts/Popups";
-import { setTheme }     from "@renderer/services/ThemeService";
+import { useContext, useEffect }   from "react";
+import { NavigationContainer }     from "@renderer/components/container/Navigator";
+import { ContextMenuContext }      from "@renderer/contexts/ContextMenu";
+import EVENTS                      from "@/common/events.json";
+import { Settings }                from "@renderer/components/popups/Settings";
+import { PopupContext }            from "@renderer/contexts/Popups";
+import { setTheme }                from "@renderer/util/services/ThemeService";
+import { BasicApplicationContent } from "@renderer/components/container/BasicApplicationContent";
 
-export function App(): JSX.Element {
+export function App() {
 
-    const { content }     = useContext(WindowContentContext);
     const { contextMenu } = useContext(ContextMenuContext);
     const { setPopup }    = useContext(PopupContext);
 
     useEffect(() => {
 
-        if ( window.localStorage.getItem('theme'))
-        {
+        if ( window.localStorage.getItem('theme') ) {
             setTheme(window.localStorage.getItem('theme') as string);
         }
 
@@ -31,7 +29,7 @@ export function App(): JSX.Element {
         }}>
             {contextMenu}
             <NavigationContainer position='header' trulyIsTheNavigator/>
-            {content}
+            <BasicApplicationContent/>
             <NavigationContainer position='footer'/>
         </div>
     )

@@ -4,7 +4,7 @@
  * @date Created on Thursday, November 14 - 11:58
  */
 
-import THEMES from '../resources/themes.json';
+import THEMES from '../../resources/themes.json';
 
 const ThemeKeyTranslationTable: Record<string, string> = {
     'backgroundColor': '--color-background',

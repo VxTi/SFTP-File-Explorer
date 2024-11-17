@@ -6,7 +6,7 @@
     "author": "example.com",
     "homepage": "https://electron-vite.org",
     "scripts": {
-        "tailwindcss": "tailwindcss --watch -o ./src/renderer/src/styles/index.css",
+        "tailwindcss": "tailwindcss --watch -o src/renderer/src/resources/styles/index.css",
         "format": "prettier --write SFTP Client",
         "lint": "eslint SFTP Client --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
         "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",

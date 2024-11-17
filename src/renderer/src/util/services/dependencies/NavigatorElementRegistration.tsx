@@ -5,7 +5,7 @@
  */
 
 
-import { registerNavigatorElement }                 from "@renderer/services/NavigatorElementRegistrator";
+import { registerNavigatorElement }                 from "@renderer/util/services/NavigatorElementRegistrator";
 import { Columns2Icon, SettingsIcon, TerminalIcon } from "lucide-react";
 import EVENTS                                       from "@/common/events.json";
 

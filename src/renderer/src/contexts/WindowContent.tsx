@@ -7,17 +7,6 @@
 import { createContext, ReactNode, useState } from "react";
 import { BasicApplicationContent }            from "@renderer/components/container/BasicApplicationContent";
 
-export interface MenuItemProps {
-    /** The name of the item */
-    name?: string;
-
-    /** The icon of the item */
-    icon: ReactNode;
-
-    /** The action to perform when the item is clicked */
-    onClick: () => void;
-}
-
 /**
  * WindowContentContext
  */

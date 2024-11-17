@@ -45,7 +45,7 @@ export function SelectionMenu(props: ISelectionMenuProps) {
             <div className="h-full w-full">
                 {!expanded ? (props.options[ selectedIdx ].title) :
                  <div
-                     className="absolute flex flex-col rounded-lg min-w-36 left-0 top-0 w-full border-solid border-[1px] border-primary bg-hover"
+                     className="absolute flex flex-col rounded-lg min-w-36 left-0 top-0 w-full border-solid border-[1px] border-primary bg-hover z-40"
                      ref={containerRef}>
                      {
                          expanded && props.options.map((option, i) => (

@@ -14,7 +14,7 @@ import { MaximizeIcon, MinimizeIcon, PlusIcon, XIcon } from "lucide-react";
 import { SFTPContext }                                 from "@renderer/contexts/SFTP";
 import { IShellMessage }                               from "@/common/ssh-definitions";
 import EVENTS                                          from "@/common/events.json";
-import '../../styles/xterm-styles.css';
+import '@renderer/resources/styles/xterm-styles.css';
 import { ContextMenu }                                 from "@renderer/contexts/ContextMenu";
 
 /**

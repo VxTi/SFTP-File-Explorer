@@ -76,10 +76,10 @@ ipcMain.handle(EVENTS.SFTP.SHELL.EXEC, (event, sessionId: string, shellId: strin
         return;
     }
 
-    const session = RegisteredSessions.get(sessionId)!;
+    const session = RegisteredSessions.get(sessionId);
 
-    if ( !session.shells.has(shellId) ) {
-        console.log("Shell ID ", shellId, " does not exist ", session.shells, sessionId, shellId, command);
+    if ( !session || !session.shells.has(shellId) ) {
+        console.log("Shell ID ", shellId, " does not exist ", session?.shells, sessionId, shellId, command);
         event.sender.send(EVENTS.SFTP.SHELL.MESSAGE,
                           { target: 'stderr', message: 'Shell not found.' } as IShellMessage);
         return;
@@ -146,7 +146,6 @@ ipcMain.handle(EVENTS.SFTP.SHELL.CREATE, (event, sessionId: string) => {
         // Register the shell instance in the session.
         session.shells.set(shellId, {
             exec: (command: string) => {
-                console.log(command);
                 session.client!.exec(command + '\n', (error, stream) => {
                     if ( error ) {
                         event.sender.send(EVENTS.SFTP.SHELL.ERROR,
@@ -268,7 +267,8 @@ ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, sessionId: string
         shells: new Map()
     };
 
-    console.log(sessionObject);
+    const privateKeyFileContent = session.privateKeyFile && fs.existsSync(session.privateKeyFile) ?
+                                    fs.readFileSync(session.privateKeyFile, 'utf-8') : '';
 
     return await new Promise((resolve) => {
         client
@@ -310,7 +310,7 @@ ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, sessionId: string
                     port: session.port ?? 22,
                     password: session.password ?? '',
                     username: session.username,
-                    privateKey: session.privateKey ?? '',
+                    privateKey: privateKeyFileContent,
                     passphrase: session.passphrase ?? '',
                 });
     });

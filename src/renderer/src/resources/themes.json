@@ -79,19 +79,21 @@
         "name": "Radioactive",
         "colors": {
             "backgroundColor": "#000",
+
             "primaryColor": "#000",
-            "primaryTextColor": "#e8ede7",
-            "primaryBorderColor": "#141414",
+            "primaryTextColor": "#f9fef8",
+            "primaryBorderColor": "#202020",
             "primaryHoverColor": "#1f1f1f",
             "primaryTextHoverColor": "#000000",
             "primaryBorderHoverColor": "#000000",
-            "secondaryColor": "#1f1f1f",
+
+            "secondaryColor": "#1a1a1a",
             "secondaryTextColor": "#a2b3a6",
             "secondaryBorderColor": "#000000",
             "secondaryTextHoverColor": "#6f3e3e",
             "tertiaryColor": "#2f2f2f",
-            "specialColor": "#1eac61",
-            "specialTextColor": "#1eac61"
+            "specialColor": "#339c6d",
+            "specialTextColor": "#339c6d"
         }
     }
 ]

@@ -3,7 +3,18 @@
  * @author Luca Warmenhoven
  * @date Created on Saturday, November 02 - 11:01
  */
-import { MenuItemProps } from "@renderer/contexts/WindowContent";
+import { ReactNode } from "react";
+
+export interface MenuItemProps {
+    /** The name of the item */
+    name?: string;
+
+    /** The icon of the item */
+    icon: ReactNode;
+
+    /** The action to perform when the item is clicked */
+    onClick: () => void;
+}
 
 export function MenuItemElement(props: MenuItemProps) {
     return (
