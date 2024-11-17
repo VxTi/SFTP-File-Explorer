@@ -15,7 +15,7 @@ import { SFTPContext }                                 from "@renderer/contexts/
 import { IShellMessage }                               from "@/common/ssh-definitions";
 import EVENTS                                          from "@/common/events.json";
 import '../../styles/xterm-styles.css';
-import { ContextMenu } from "@renderer/contexts/ContextMenu";
+import { ContextMenu }                                 from "@renderer/contexts/ContextMenu";
 
 /**
  * Default terminal configuration, used to create a new terminal instance
@@ -32,8 +32,8 @@ const defaultTerminal = new Terminal(
         smoothScrollDuration: 100,
         scrollback: 1000,
         scrollSensitivity: 3,
-        fontFamily: 'Menlo, Monaco, JetBrains Mono, monospace',
-        fontSize: 14,
+        fontFamily: 'Menlo, JetBrains Mono, monospace',
+        fontSize: 15,
         theme: {
             background: "#00000000",
             foreground: 'var(--color-text-primary)',
@@ -65,7 +65,7 @@ export function TerminalContainer() {
         defaultTerminal.clear();
         fitAddon.fit();
         window.api.sftp.shell.getContent(sessionId, shellId)
-            .then(content => defaultTerminal.write(content));
+              .then(content => defaultTerminal.write(content));
 
     }, [ shellId, sessionId, terminalVisible ]);
 
@@ -78,13 +78,14 @@ export function TerminalContainer() {
             terminalVisible &&
             !defaultTerminal.element &&
             sessionId &&
-            !shellId ) {
+            shellId ) {
 
             defaultTerminal.clear();
             defaultTerminal.open(terminalContainerRef.current);
             fitAddon.fit();
             let lineBuffer = '';
             defaultTerminal.onKey((e) => {
+                console.log(e.domEvent.key);
                 switch ( e.domEvent.key ) {
                     case 'Backspace':
                         const newBuffer = lineBuffer.slice(0, lineBuffer.length - 1);
@@ -92,8 +93,11 @@ export function TerminalContainer() {
                         lineBuffer = newBuffer;
                         break;
                     case 'Enter':
-                        if ( lineBuffer.trim().length === 0 || !shellId )
+                        if ( lineBuffer.trim().length === 0 || !shellId ) {
+                            console.log("Empty buffer or no shell ID", lineBuffer, shellId);
                             break;
+                        }
+                        console.log("Executing command: ", lineBuffer);
 
                         window.api.sftp.shell.exec(
                             sessionId,
@@ -119,7 +123,7 @@ export function TerminalContainer() {
             window.removeEventListener(EVENTS.RENDERER.TOGGLE_TERMINAL, handleVisibility);
         }
 
-    }, [ terminalContainerRef, terminalVisible, sessionId ]);
+    }, [ terminalContainerRef, terminalVisible, sessionId, shellId ]);
 
     useEffect(() => {
         if ( !sessionId )
@@ -157,8 +161,9 @@ export function TerminalContainer() {
             else
                 defaultTerminal.write(msg);
         });
-        window.api.sftp.shell.create(sessionId);
-    }, [ sessionId ]);
+        if ( !shellId && sessionId )
+            window.api.sftp.shell.create(sessionId);
+    }, [ sessionId, shellId, terminalSessions ]);
 
     if ( !terminalVisible )
         return null;
@@ -211,7 +216,12 @@ function ShellSession(props: { shellId: string, sessionId: string, sessionName: 
         <ContextMenu<HTMLDivElement> items={[
             { type: 'item', title: 'Rename', onClick: () => console.log('Rename') },
             { type: 'item', title: 'Clear', onClick: () => console.log('Clear') },
-            { type: 'item', title: 'Close', shortcut: 'Meta+W', onClick: () => window.api.sftp.shell.destroy(props.sessionId, props.shellId) }
+            {
+                type: 'item',
+                title: 'Close',
+                shortcut: 'Meta+W',
+                onClick: () => window.api.sftp.shell.destroy(props.sessionId, props.shellId)
+            }
         ]}>
             {(ref) => (
                 <div

@@ -53,6 +53,7 @@ export function Sidebar() {
                             sides={[ 'right' ]}
                             onResizeEnd={(size) => setSidebarSize(size)}
                             min={30} max={500} margin={5}>
+            <h2 className="text-xl text-primary font-satoshi font-bold px-5 py-3 text-nowrap">SFTP Client</h2>
             <div
                 className="flex flex-col justify-start items-stretch shrink-0 overflow-scroll grow gap-1 h-full max-w-full p-1">
 

@@ -48,28 +48,33 @@ function Unauthorized() {
     const { setPopup } = useContext(PopupContext);
 
     return (
-        <div className="flex flex-col justify-center items-center h-full gap-2">
+        <div className="flex flex-col justify-center items-center h-full gap-2 mx-2">
             <CloudOffIcon size={60}/>
             <span className="text-primary text-2xl font-satoshi font-bold">
                 Not connected to any session yet.
             </span>
-            <div className="grid grid-cols-2 gap-2">
-
-                <button
-                    className="rounded-lg px-3 py-1.5 mt-3 bg-secondary text-secondary flex items-center justify-start hover:text-special transition-colors duration-300 cursor-pointer"
-                    onClick={() => setPopup({ uid: 'add-session', content: <CreateSession/> })}>
-                    <PlusIcon size={24} className="mr-2"/>
-                    Create Session
-                </button>
-                <button
-                    className="rounded-lg px-3 py-1.5 mt-3 bg-secondary text-secondary flex items-center justify-start hover:text-special transition-colors duration-300 cursor-pointer"
-                    onClick={() => setPopup({ uid: 'quick-connect', content: <QuickConnect/> })}
-                >
-                    <UnplugIcon size={24} className="mr-2"/>
-                    Quick Connect
-                </button>
+            <div className="flex flex-row justify-center items-center gap-2 flex-wrap">
+                <MainMenuAction title="Create Session"
+                                icon={<PlusIcon size={24} className="mr-2 shrink-0"/>}
+                                onClick={() => setPopup({ uid: 'add-session', content: <CreateSession/> })}/>
+                <MainMenuAction title="Quick Connect"
+                                icon={<UnplugIcon size={24} className="mr-2 shrink-0"/>}
+                                onClick={() => setPopup({ uid: 'quick-connect', content: <QuickConnect/> })}/>
             </div>
         </div>
+    )
+}
+
+function MainMenuAction(props: { title: string, icon: JSX.Element, onClick: () => void }) {
+    return (
+        <button
+            className="rounded-lg px-3 py-1.5 mt-3 basis-40 text-nowrap grow bg-secondary text-secondary flex items-center justify-start hover:text-special transition-colors duration-300 cursor-pointer"
+            onClick={() => props.onClick()}>
+            {props.icon}
+            <span className="text-center w-full">
+            {props.title}
+            </span>
+        </button>
     )
 }
 

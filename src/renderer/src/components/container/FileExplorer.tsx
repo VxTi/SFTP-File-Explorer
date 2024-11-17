@@ -5,9 +5,9 @@
  */
 import { useContext }  from "react";
 import { SFTPContext } from "@renderer/contexts/SFTP";
-import { ActionBar }   from "@renderer/components/file-explorer/ActionBar";
-import { FileExplorerOrigin } from "@renderer/components/file-explorer/FileList";
-import { LoadingRotor }       from "@renderer/components/LoadingRotor";
+import { ActionBar }    from "@renderer/components/file-explorer/ActionBar";
+import { FileList }     from "@renderer/components/file-explorer/FileList";
+import { LoadingRotor } from "@renderer/components/LoadingRotor";
 
 export function FileExplorer() {
 
@@ -27,10 +27,10 @@ export function FileExplorer() {
         <div className="grid grid-cols-2 items-stretch grow">
             <div
                 className="flex flex-col overflow-y-scroll justify-start items-stretch grow border-r-[1px] border-solid border-primary">
-                <FileExplorerOrigin client={clients.local}/>
+                <FileList client={clients.local}/>
             </div>
             <div className="flex flex-col overflow-y-scroll justify-start items-stretch grow">
-                <FileExplorerOrigin client={clients.remote}/>
+                <FileList client={clients.remote}/>
             </div>
         </div>
     </>)

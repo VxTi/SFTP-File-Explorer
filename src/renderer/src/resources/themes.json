@@ -36,5 +36,62 @@
             "specialColor": "#d13a3a",
             "specialTextColor": "#d13a3a"
         }
+    },
+    {
+        "name": "Navy Blue",
+        "colors": {
+            "backgroundColor": "#282a36",
+            "primaryColor": "#21222c",
+            "primaryTextColor": "#f8f8f2",
+            "primaryBorderColor": "#000000",
+            "primaryHoverColor": "#44475a",
+            "primaryTextHoverColor": "#f8f8f2",
+            "primaryBorderHoverColor": "#f8f8f2",
+            "secondaryColor": "#44475a",
+            "secondaryTextColor": "#f8f8f2",
+            "secondaryBorderColor": "#000000",
+            "secondaryTextHoverColor": "#f8f8f2",
+            "tertiaryColor": "#6272a4",
+            "specialColor": "#5999ff",
+            "specialTextColor": "#5999ff"
+        }
+    },
+    {
+        "name": "Volcano",
+        "colors": {
+            "backgroundColor": "#0f0f0f",
+            "primaryColor": "#0f0f0f",
+            "primaryTextColor": "#c8b8b8",
+            "primaryBorderColor": "#000000",
+            "primaryHoverColor": "#1f1f1f",
+            "primaryTextHoverColor": "#000000",
+            "primaryBorderHoverColor": "#000000",
+            "secondaryColor": "#1f1f1f",
+            "secondaryTextColor": "#733d3d",
+            "secondaryBorderColor": "#000000",
+            "secondaryTextHoverColor": "#6f3e3e",
+            "tertiaryColor": "#2f2f2f",
+            "specialColor": "#d13a3a",
+            "specialTextColor": "#d13a3a"
+        }
+    },
+    {
+        "name": "Radioactive",
+        "colors": {
+            "backgroundColor": "#000",
+            "primaryColor": "#000",
+            "primaryTextColor": "#e8ede7",
+            "primaryBorderColor": "#141414",
+            "primaryHoverColor": "#1f1f1f",
+            "primaryTextHoverColor": "#000000",
+            "primaryBorderHoverColor": "#000000",
+            "secondaryColor": "#1f1f1f",
+            "secondaryTextColor": "#a2b3a6",
+            "secondaryBorderColor": "#000000",
+            "secondaryTextHoverColor": "#6f3e3e",
+            "tertiaryColor": "#2f2f2f",
+            "specialColor": "#1eac61",
+            "specialTextColor": "#1eac61"
+        }
     }
 ]

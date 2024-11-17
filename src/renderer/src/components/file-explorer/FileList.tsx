@@ -11,7 +11,7 @@ import { FileListItem } from "@renderer/components/file-explorer/FileListItem";
 import { ContextMenu }  from "@renderer/contexts/ContextMenu";
 
 
-export function FileExplorerOrigin(props: { client: IClient }) {
+export function FileList(props: { client: IClient }) {
 
     const [ files, setFiles ] = useState<IFileEntry[] | undefined>(undefined);
 
@@ -36,7 +36,7 @@ export function FileExplorerOrigin(props: { client: IClient }) {
                     {
                         !files ? <LoadingRotor className="place-self-center grow"/> : (
                             <div
-                                className="absolute hide-scrollbar left-0 top-0 w-full h-full overflow-y-scroll flex flex-col justify-start items-stretch gap-0.5">
+                                className="absolute hide-scrollbar left-0 top-0 w-full h-full overflow-y-scroll flex flex-col justify-start items-stretch gap-0.5 pb-8">
                                 {props.client.cwd !== '/' &&
                                     <FileListItem client={props.client} className="sticky top-0" file={{
                                         type: 'directory',
