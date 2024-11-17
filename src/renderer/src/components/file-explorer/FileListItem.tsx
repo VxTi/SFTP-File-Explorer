@@ -6,9 +6,9 @@
 import { IFileEntry, IFileType } from "@/common/file-information";
 import { ReactNode, useMemo }    from "react";
 import { FileIcon, FolderIcon }  from "lucide-react";
-import { IClient }               from "@/common/ssh-definitions";
-import { ContextMenu }           from "@renderer/hooks/ContextMenu";
-import { byteValueToString }     from "@renderer/util/StringUtils";
+import { IClient }           from "@/common/ssh-definitions";
+import { ContextMenu }       from "@renderer/contexts/ContextMenu";
+import { byteValueToString } from "@renderer/util/StringUtils";
 
 
 const FileEntryTypeElements: Record<IFileType, ReactNode> = {
@@ -35,17 +35,29 @@ export function FileListItem(props: { file: IFileEntry, client: IClient, classNa
 
     return (
         <ContextMenu<HTMLButtonElement> items={[
-            { type: 'item', name: 'Open', onClick: () => console.log('Open') },
-            { type: 'item', name: 'Edit', onClick: () => console.log('Edit') },
+            {
+                type: 'item', title: 'Open', onClick: () => {
+                    if ( props.file.type === 'directory' ) {
+                        props.client.setCwd(props.file.path + window.api.fs.separator + props.file.name);
+                    }
+                    else {
+                        console.log('Open file', props.file);
+                    }
+                }
+            },
+            (
+                props.file.type === 'directory' ? null :
+                    { type: 'item', title: 'Edit', onClick: () => console.log('Edit') }
+            ),
             { type: 'divider' },
-            { type: 'item', name: 'Copy', onClick: () => console.log('Copy') },
-            { type: 'item', name: 'Cut', onClick: () => console.log('Cut') },
-            { type: 'item', name: 'Paste', onClick: () => console.log('Paste') },
+            { type: 'item', title: 'Copy', onClick: () => console.log('Copy') },
+            { type: 'item', title: 'Cut', onClick: () => console.log('Cut') },
+            { type: 'item', title: 'Paste', onClick: () => console.log('Paste') },
             { type: 'divider' },
-            { type: 'item', name: 'Delete', onClick: () => console.log('Delete') },
-            { type: 'item', name: 'Rename', onClick: () => console.log('Rename') },
+            { type: 'item', title: 'Delete', onClick: () => console.log('Delete') },
+            { type: 'item', title: 'Rename', onClick: () => console.log('Rename') },
             { type: 'divider' },
-            { type: 'item', name: 'Properties', onClick: () => console.log('Properties') }
+            { type: 'item', title: 'Properties', onClick: () => console.log('Properties') }
         ]}>
             {(ref) => (
                 <button

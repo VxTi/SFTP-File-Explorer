@@ -1,5 +1,5 @@
 /**
- * @fileoverview PopupContext.tsx
+ * @fileoverview Popups.tsx
  * @author Luca Warmenhoven
  * @date Created on Monday, November 04 - 10:26
  */
@@ -7,7 +7,6 @@ import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffe
 
 type PopupType = {
     uid: string,
-    priority?: number,
     content: ReactNode,
     type?: 'fullscreen' | 'lowerscreen',
     dismissNode?: ReactNode,
@@ -42,10 +41,9 @@ function PopupWrapper() {
     useEffect(() => {
 
         const handleKeydown = (event: KeyboardEvent) => {
+            if ( event.key !== 'Escape' ) return;
 
-            if ( event.key === 'Escape' ) {
-                setPopup(undefined);
-            }
+            setPopup(undefined);
         }
 
         window.addEventListener('keydown', handleKeydown);
@@ -54,13 +52,13 @@ function PopupWrapper() {
             window.removeEventListener('keydown', handleKeydown);
         }
 
-    }, [ popup ]);
+    }, [ popup, setPopup ]);
 
     if ( !popup ) return null;
 
     return (
         <div
-            className={"absolute flex flex-col inset-0 w-full h-full bg-black/50 z-20 " + (popup.type === 'lowerscreen' ? "justify-end items-stretch" : "justify-center items-center")}>
+            className={"absolute flex flex-col inset-0 w-full h-full backdrop-blur-sm bg-black/50 z-20 " + (popup.type === 'lowerscreen' ? "justify-end items-stretch" : "justify-center items-center")}>
             <PopupBody>
                 {popup.content}
             </PopupBody>
@@ -71,7 +69,7 @@ function PopupWrapper() {
 function PopupBody(props: { children: ReactNode }) {
     return (
         <div
-            className="flex flex-col justify-start items-stretch max-h-screen bg-primary border-[1px] border-primary p-4 z-20 animate-in slide-in-from-bottom-2 zoom-in-95 fade-in-10 duration-300">
+            className="flex flex-col justify-start items-stretch max-h-screen bg-primary border-[1px] border-primary p-4 z-20 animate-in slide-in-from-bottom-2 zoom-in-95 fade-in-10 duration-300 rounded-xl">
             {props.children}
         </div>
     )

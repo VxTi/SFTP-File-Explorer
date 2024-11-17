@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
-import { WindowContentContext } from "@renderer/contexts/WindowContentContext";
-import { NavigationContainer }  from "@renderer/components/container/Navigator";
-import { ContextMenuContext } from "@renderer/hooks/ContextMenu";
-import EVENTS                 from "@/common/events.json";
-import { Settings }           from "@renderer/components/container/popups/Settings";
-import { PopupContext }          from "@renderer/contexts/PopupContext";
-import { setTheme }              from "@renderer/services/ThemeService";
+import { WindowContentContext }  from "@renderer/contexts/WindowContent";
+import { NavigationContainer }   from "@renderer/components/container/Navigator";
+import { ContextMenuContext }  from "@renderer/contexts/ContextMenu";
+import EVENTS                  from "@/common/events.json";
+import { Settings }     from "@renderer/components/popups/Settings";
+import { PopupContext } from "@renderer/contexts/Popups";
+import { setTheme }     from "@renderer/services/ThemeService";
 
 export function App(): JSX.Element {
 

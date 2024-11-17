@@ -157,9 +157,7 @@ ipcMain.handle(EVENTS.SFTP.SHELL.CREATE, (event, sessionId: string) => {
                     stream.on('data', (data) => {
                         const decoded = data.toString();
                         event.sender.send(EVENTS.SFTP.SHELL.MESSAGE,
-                                          {
-                                              shellId: shellId, target: 'stdio', message: decoded
-                                          } as IShellMessage);
+                                          { shellId: shellId, target: 'stdio', message: decoded } as IShellMessage);
                         sessionContent += decoded;
                         console.log(decoded);
                     });
@@ -242,15 +240,20 @@ ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, sessionId: string
 
     /* Fingerprint verification */
     do {
+
+        // Check if the session requires fingerprint verification, and if the platform is macOS
+        // Fingerprints are only supported on macOS
         if ( !(session.requiresFingerprintVerification && process.platform === 'darwin') )
             break;
 
+        // Check if the system can prompt for TouchID
         if ( !systemPreferences.canPromptTouchID() )
             break;
 
         try {
-            await systemPreferences.promptTouchID('Please verify your fingerprint to continue.');
-        } catch (error) {
+            await systemPreferences.promptTouchID('verify fingerprint');
+        } catch (_) {
+            console.log("Fingerprint cancelled");
             return { sessionId: null, error: 'Fingerprint verification failed.' };
         }
 
@@ -275,10 +278,12 @@ ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, sessionId: string
                         event.sender.send(EVENTS.SFTP.CONNECTION_REFUSED, { message: error.message });
                         resolve({ sessionId: null, error: error.message });
                     }
-                    resolve({ sessionId: sessionObject.session.uid, error: null });
+
                     sessionObject.sftp   = sftp;
                     sessionObject.status = 'connected';
                     RegisteredSessions.set(session.uid, sessionObject);
+
+                    resolve({ sessionId: sessionObject.session.uid, error: null });
                 })
             })
             // @ts-ignore
@@ -322,20 +327,16 @@ ipcMain.handle(EVENTS.SFTP.LIST_FILES, async (event, sessionUid: string, targetP
     const session = RegisteredSessions.get(sessionUid)!;
 
     if ( !session.sftp || session.status !== 'connected' ) {
-        event.sender.send(EVENTS.SFTP.SHELL.MESSAGE, {
-            target: 'stderr',
-            message: 'No active SFTP connection available.'
-        } as IShellMessage);
+        event.sender.send(EVENTS.SFTP.SHELL.MESSAGE,
+                          { target: 'stderr', message: 'No active SFTP connection available.' } as IShellMessage);
         return [];
     }
 
     return await new Promise((resolve) => {
         session.sftp!.readdir(targetPath, (error, files) => {
             if ( error ) {
-                event.sender.send(EVENTS.SFTP.SHELL.MESSAGE, {
-                    target: 'stderr',
-                    message: error.message
-                } as IShellMessage);
+                event.sender.send(EVENTS.SFTP.SHELL.MESSAGE,
+                                  { target: 'stderr', message: error.message } as IShellMessage);
                 return;
             }
 
@@ -361,28 +362,24 @@ ipcMain.handle(EVENTS.SFTP.LIST_FILES, async (event, sessionUid: string, targetP
 /**
  * Attempts to retrieve the home directory of the remote server.
  */
-ipcMain.handle(EVENTS.SFTP.HOME_DIR, async (event, sessionUid: string) => {
-    if ( !verifySessionID(event, sessionUid) ) {
+ipcMain.handle(EVENTS.SFTP.HOME_DIR, async (event, sessionId: string) => {
+    if ( !verifySessionID(event, sessionId) ) {
         return "/";
     }
 
-    const session = RegisteredSessions.get(sessionUid)!;
+    const session = RegisteredSessions.get(sessionId)!;
 
     if ( !session.sftp || session.status !== 'connected' ) {
-        event.sender.send(EVENTS.SFTP.SHELL.MESSAGE, {
-            target: 'stderr',
-            message: 'No active SFTP connection available.'
-        } as IShellMessage);
+        event.sender.send(EVENTS.SFTP.SHELL.MESSAGE,
+                          { target: 'stderr', message: 'No active SFTP connection available.' } as IShellMessage);
         return "/";
     }
 
     return await new Promise((resolve) => {
         session.sftp!.realpath('.', (error, path) => {
             if ( error ) {
-                event.sender.send(EVENTS.SFTP.SHELL.MESSAGE, {
-                    target: 'stderr',
-                    message: error.message
-                } as IShellMessage);
+                event.sender.send(EVENTS.SFTP.SHELL.MESSAGE,
+                                  { target: 'stderr', message: error.message } as IShellMessage);
                 resolve('/');
                 return;
             }

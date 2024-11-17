@@ -2,10 +2,10 @@
     {
         "name": "System Light",
         "colors": {
-            "backgroundColor": "#f5f5f5",
-            "primaryColor": "#f5f5f5",
+            "backgroundColor": "#ffffff",
+            "primaryColor": "#fafafa",
             "primaryTextColor": "#000000",
-            "primaryBorderColor": "#000000",
+            "primaryBorderColor": "#c7c7ca",
             "primaryHoverColor": "#e0e0e0",
             "primaryTextHoverColor": "#000000",
             "primaryBorderHoverColor": "#000000",
@@ -32,7 +32,7 @@
             "secondaryTextColor": "#733d3d",
             "secondaryBorderColor": "#000000",
             "secondaryTextHoverColor": "#6f3e3e",
-            "tertiaryColor": "#d0d0d0",
+            "tertiaryColor": "#550f0f",
             "specialColor": "#d13a3a",
             "specialTextColor": "#d13a3a"
         }

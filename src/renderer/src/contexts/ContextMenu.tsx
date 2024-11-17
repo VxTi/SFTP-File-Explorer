@@ -13,7 +13,8 @@ import {
     useEffect,
     useRef,
     useState
-} from "react";
+}                          from "react";
+import { useClickOutside } from "@renderer/hooks/ClickOutside";
 
 interface ContextMenuItemBase<T> {
     type: T
@@ -22,11 +23,13 @@ interface ContextMenuItemBase<T> {
 export interface ContextMenuDivider extends ContextMenuItemBase<'divider'> {}
 
 export interface ContextMenuItem extends ContextMenuItemBase<'item'> {
-    name: string;
+    title: string;
     icon?: ReactNode;
     shortcut?: string;
     onClick: () => void;
 }
+
+type ContextMenuItemType = ContextMenuItem | ContextMenuDivider | null;
 
 /**
  * ContextMenuContext definition.
@@ -48,10 +51,10 @@ export const ContextMenuContext = createContext<{
  */
 export function ContextMenu<T extends HTMLElement>(props: {
     children: (childRef?: RefObject<T>) => ReactNode,
-    items: (ContextMenuItem | ContextMenuDivider)[]
+    items: ContextMenuItemType[]
 }) {
 
-    const { setContextMenu } = useContext(ContextMenuContext);
+    const { setContextMenu }  = useContext(ContextMenuContext);
     const forwardedElementRef = useRef<T>(null);
 
     useEffect(() => {
@@ -60,6 +63,7 @@ export function ContextMenu<T extends HTMLElement>(props: {
 
         const handleContextMenu = (event: MouseEvent) => {
             event.preventDefault();
+            event.stopPropagation();
             setContextMenu(<ContextMenuContainer originX={event.clientX} originY={event.clientY} items={props.items}/>);
         };
 
@@ -71,11 +75,7 @@ export function ContextMenu<T extends HTMLElement>(props: {
 
     }, [ forwardedElementRef, props.children ]);
 
-    return (
-        <>
-            {props.children(forwardedElementRef)}
-        </>
-    );
+    return props.children(forwardedElementRef);
 }
 
 /**
@@ -85,46 +85,24 @@ export function ContextMenu<T extends HTMLElement>(props: {
  * @param props.items - The items to show in the context menu
  */
 function ContextMenuContainer(props: {
-    items: (ContextMenuItem | ContextMenuDivider)[],
+    items: ContextMenuItemType[],
     originX: number,
     originY: number
 }) {
 
     const { setContextMenu } = useContext(ContextMenuContext);
     const ctxMenuRef         = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if ( !ctxMenuRef.current )
-            return;
-
-        const dimensions = ctxMenuRef.current.getBoundingClientRect();
-
-        const handleClick = (event: MouseEvent) => {
-            if ( !ctxMenuRef.current || (
-                event.clientX < dimensions.left ||
-                event.clientX > dimensions.right ||
-                event.clientY < dimensions.top ||
-                event.clientY > dimensions.bottom
-            ) )
-                setContextMenu(null);
-        }
-
-        console.log('Adding event listener');
-
-        window.addEventListener('click', handleClick);
-
-        return () => {
-            window.removeEventListener('click', handleClick);
-        }
-    }, [ ctxMenuRef ]);
+    useClickOutside(ctxMenuRef, () => setContextMenu(null));
 
     return (
-        <div className="absolute z-50 bg-primary border-primary border-[1px] shadow-lg gap-2 rounded-lg px-3 py-1"
+        <div className="absolute z-50 bg-primary border-primary border-[1px] shadow-lg gap-2 rounded-lg py-0.5 px-1"
              ref={ctxMenuRef}
              style={{
                  transform: `translate(${props.originX}px, ${props.originY}px)`
              }}>
             {props.items.map((item, index) => {
+                if ( !item )
+                    return null;
                 if ( item.type === 'divider' )
                     return <div key={index} className="bg-border w-full h-[1px] my-1"/>;
 
@@ -135,14 +113,17 @@ function ContextMenuContainer(props: {
 
                 return (
                     <div key={index}
-                         className="grid text-primary items-center hover:bg-primary hover:text-secondary cursor-pointer"
-                         onClick={item.onClick}
+                         className="grid text-primary items-center hover:bg-hover cursor-pointer rounded-md px-1 py-1"
+                         onClick={() => {
+                             item.onClick();
+                             setContextMenu(null);
+                         }}
                          style={{
                              gridTemplateColumns: '40px 1fr 40px'
                          }}
                     >
                         <span className={`icon-${item.icon} w-4 h-4 mr-2`}/>
-                        <span className="text-sm">{item.name}</span>
+                        <span className="text-sm">{item.title}</span>
                         <span className="text-xs text-secondary justify-self-end">{shortcutElement}</span>
                     </div>
                 )

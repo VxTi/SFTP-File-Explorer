@@ -1,5 +1,5 @@
 /**
- * @fileoverview WindowContentContext.tsx
+ * @fileoverview WindowContent.tsx
  * @author Luca Warmenhoven
  * @date Created on Friday, November 01 - 13:13
  */

@@ -101,18 +101,6 @@ const ResizeSideStyles: Record<ResizeSide, any> = {
 }
 
 /**
- * Brighten a color by a certain amount
- * @param color The color to brighten
- * @param amount The amount to brighten the color by
- */
-const brightenColor = (color: string, amount: number) => {
-    let rgb = color.match(/\d+/g)!.map(Number);
-    amount  = Math.max(-255, Math.min(255, amount));
-    rgb     = rgb.map((c) => Math.max(0, Math.min(255, c + amount)));
-    return `rgb(${rgb[ 0 ]}, ${rgb[ 1 ]}, ${rgb[ 2 ]})`;
-}
-
-/**
  * The ResizeGrip component
  * This component is a grip that is used to resize the container,
  * and is placed on the sides of the container.
@@ -184,10 +172,6 @@ export function ResizableContainer(props: ResizableContainerProps & ResizeConfig
             window.document.documentElement.style.userSelect = 'none';
             window.document.documentElement.style.cursor     = PropertyTable[ props.direction ].cursor;
 
-            // Make border brighter
-            const borderColor                       = window.getComputedStyle(containerRef.current).borderColor;
-            containerRef.current!.style.borderColor = brightenColor(borderColor, 30);
-
             const initialPos = moveEvent[ PropertyTable[ props.direction ].mouseProperty ];
 
             /**
@@ -220,7 +204,6 @@ export function ResizableContainer(props: ResizableContainerProps & ResizeConfig
                 window.removeEventListener('mousemove', handleMouseMove);
                 window.document.documentElement.style.cursor     = 'auto';
                 window.document.documentElement.style.userSelect = 'auto';
-                containerRef.current!.style.borderColor          = borderColor;
                 props.onResizeEnd?.(elementSize.current!);
             }
 
@@ -238,11 +221,8 @@ export function ResizableContainer(props: ResizableContainerProps & ResizeConfig
 
     return (
         <div
-            className={`relative p-0.5 flex flex-col bg-primary overflow-visible border-[1px] border-primary ${props.className ?? ''}`}
-            style={{
-                borderStyle: 'unset',
-                transitionProperty: `${PropertyTable[ props.direction ].dimensionProperty} ${PropertyTable[ props.direction ].minSizeProperty}, ${PropertyTable[ props.direction ].maxSizeProperty}`,
-            }}
+            className={`relative flex flex-col bg-primary overflow-visible border-[1px] border-primary ${props.className ?? ''}`}
+            style={{ borderStyle: 'unset' }}
             ref={containerRef}>
             {props.sides.map((side, i) => (
                 <ResizeGrip key={i} className={ResizeSideStyles[ side ][ 0 ]} children={ResizeSideStyles[ side ][ 1 ]}/>

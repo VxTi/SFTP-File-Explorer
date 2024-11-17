@@ -3,7 +3,7 @@
  * @author Luca Warmenhoven
  * @date Created on Saturday, November 02 - 11:01
  */
-import { MenuItemProps } from "@renderer/contexts/WindowContentContext";
+import { MenuItemProps } from "@renderer/contexts/WindowContent";
 
 export function MenuItemElement(props: MenuItemProps) {
     return (

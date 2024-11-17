@@ -4,7 +4,7 @@
  * @date Created on Sunday, November 03 - 17:43
  */
 import { useContext }  from "react";
-import { SFTPContext } from "@renderer/contexts/SFTPContext";
+import { SFTPContext } from "@renderer/contexts/SFTP";
 import { ActionBar }   from "@renderer/components/file-explorer/ActionBar";
 import { FileExplorerOrigin } from "@renderer/components/file-explorer/FileList";
 import { LoadingRotor }       from "@renderer/components/LoadingRotor";

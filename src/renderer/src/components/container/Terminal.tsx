@@ -11,11 +11,11 @@ import { useMap }                                      from "@renderer/hooks/Use
 import { Renamable }                                   from "@renderer/components/interactive/Renamable";
 import { InteractiveIconClasses, InteractiveIconSize } from "@renderer/components/Icons";
 import { MaximizeIcon, MinimizeIcon, PlusIcon, XIcon } from "lucide-react";
-import { SFTPContext }                                 from "@renderer/contexts/SFTPContext";
+import { SFTPContext }                                 from "@renderer/contexts/SFTP";
 import { IShellMessage }                               from "@/common/ssh-definitions";
 import EVENTS                                          from "@/common/events.json";
 import '../../styles/xterm-styles.css';
-import { ContextMenu }                                 from "@renderer/hooks/ContextMenu";
+import { ContextMenu } from "@renderer/contexts/ContextMenu";
 
 /**
  * Default terminal configuration, used to create a new terminal instance
@@ -37,8 +37,7 @@ const defaultTerminal = new Terminal(
         theme: {
             background: "#00000000",
             foreground: 'var(--color-text-primary)',
-            cursor: 'var(--color-primary)',
-            white: 'var(--color-text-primary)',
+            cursor: 'var(--color-text-primary)',
         }
     });
 
@@ -173,7 +172,7 @@ export function TerminalContainer() {
             fitAddon.fit();
         }}
         sides={[ 'top' ]}>
-        <div className="grid pb-0.5 items-center border-b-[1px] border-solid border-primary"
+        <div className="grid py-0.5 items-center border-b-[1px] border-solid border-primary"
              style={{
                  gridTemplateColumns: 'auto 1fr auto auto'
              }}>
@@ -209,7 +208,11 @@ function ShellSession(props: { shellId: string, sessionId: string, sessionName: 
     const { shellId, setShellID } = useContext(SFTPContext);
 
     return (
-        <ContextMenu<HTMLDivElement> items={[]}>
+        <ContextMenu<HTMLDivElement> items={[
+            { type: 'item', title: 'Rename', onClick: () => console.log('Rename') },
+            { type: 'item', title: 'Clear', onClick: () => console.log('Clear') },
+            { type: 'item', title: 'Close', shortcut: 'Meta+W', onClick: () => window.api.sftp.shell.destroy(props.sessionId, props.shellId) }
+        ]}>
             {(ref) => (
                 <div
                     ref={ref}

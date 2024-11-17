@@ -66,6 +66,10 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
             window.api.sessions.list()
                   .then(setSessions);
         });
+        window.api.on(EVENTS.SESSIONS.REMOVED, () => {
+            window.api.sessions.list()
+                  .then(setSessions);
+        });
     }, []);
 
     /**
@@ -73,18 +77,22 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
      * @param session - The session to authorize
      */
     const authorize = useCallback(async (sessionId0: string) => {
+
+        if ( status === 'connecting' || status === 'connected' || sessionId === sessionId0 )
+            return;
+
+        console.log(sessionId0, sessionId);
+
         setStatus('connecting');
-        const { error, sessionId } = await window.api.sftp.connect(sessionId0);
-        if ( error || !sessionId ) {
-            console.error('Failed to connect', error, sessionId);
+        const response = await window.api.sftp.connect(sessionId0);
+        if ( response.error || !response.sessionId ) {
             setStatus('disconnected');
             return;
         }
 
-        console.log('Connected to session', sessionId);
-        setSessionId(sessionId);
-        setStatus('connected')
-    }, []);
+        setSessionId(response.sessionId);
+        setStatus('connected');
+    }, [ sessionId, status ]);
 
     /**
      * Creates a new shell
