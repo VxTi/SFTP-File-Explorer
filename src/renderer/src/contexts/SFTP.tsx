@@ -81,11 +81,15 @@ export function SFTPContextProvider(props: { children: ReactNode }) {
         if ( status === 'connecting' || sessionId === sessionId0 )
             return;
 
-        console.log(sessionId0, sessionId);
-
         setStatus('connecting');
         const response = await window.api.sftp.connect(sessionId0);
         if ( response.error || !response.sessionId ) {
+            window.dispatchEvent(new CustomEvent('notification', {
+                detail: {
+                    message: 'Failed to connect to session.',
+                    type: 'error'
+                }
+            }));
             setStatus('disconnected');
             return;
         }

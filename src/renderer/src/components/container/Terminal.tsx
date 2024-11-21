@@ -85,7 +85,6 @@ export function TerminalContainer() {
             fitAddon.fit();
             let lineBuffer = '';
             defaultTerminal.onKey((e) => {
-                console.log(e.domEvent.key);
                 switch ( e.domEvent.key ) {
                     case 'Backspace':
                         const newBuffer = lineBuffer.slice(0, lineBuffer.length - 1);
@@ -94,10 +93,8 @@ export function TerminalContainer() {
                         break;
                     case 'Enter':
                         if ( lineBuffer.trim().length === 0 || !shellId ) {
-                            console.log("Empty buffer or no shell ID", lineBuffer, shellId);
                             break;
                         }
-                        console.log("Executing command: ", lineBuffer);
 
                         window.api.sftp.shell.exec(
                             sessionId,
