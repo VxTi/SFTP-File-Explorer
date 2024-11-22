@@ -4,11 +4,30 @@
  * @date Created on Tuesday, November 12 - 12:11
  */
 
-import { IFileEntry } from "@/common/file-information";
-
+import { IFileEntry } from '@/common/file-information';
 
 export type TConnectionStatus = 'connected' | 'idle';
 export type TShellMessageTarget = 'stderr' | 'stdio';
+
+/**
+ * Command snippets.
+ * These are commands that can be executed when one joins a session,
+ * or manually triggered in a session.
+ */
+export interface ICommandSnippet {
+
+    /** The unique identifier of this snippet. */
+    snippetId: string;
+
+    /** A list of session IDs used to determine whether to run this snippet upon connect. */
+    runOnConnect: string[],
+
+    /** The title of the snippet, visible in the sidebar and in the snippet menu in the connection */
+    title: string;
+
+    /** The actual command */
+    command: string;
+}
 
 /**
  * Represents a shell message.

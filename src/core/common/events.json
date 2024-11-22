@@ -21,7 +21,13 @@
             "ERROR": "sftp::shell-error",
             "LIST_SHELLS": "sftp::list-shells",
             "EXEC": "sftp::shell-execute",
-            "GET_CONTENT": "sftp::shell-get-content"
+          "GET_CONTENT": "sftp::shell-get-content",
+          "SNIPPET": {
+            "CREATE": "sftp::shell::snippet::create",
+            "REMOVE": "sftp::shell::snippet::remove",
+            "LIST_CHANGED": "sftp::shell::snippet::changes",
+            "LIST": "sftp::shell::snippet::list"
+          }
         },
         "LIST_FILES": "sftp::list-files",
         "HOME_DIR": "sftp::home-dir",

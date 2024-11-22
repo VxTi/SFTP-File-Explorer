@@ -4,22 +4,21 @@
  * @date Created on Thursday, November 14 - 10:56
  */
 
-import { app, ipcMain } from "electron";
-
 import EVENTS                           from '@/common/events.json';
-import { ISSHSession, ISSHSessionSafe } from "@/common/ssh-definitions";
-import { RegisteredSessions }           from "./SFTPHandlers";
-import fs                               from "fs";
-import path                             from "node:path";
+import { ISSHSession, ISSHSessionSafe } from '@/common/ssh-definitions';
+import { app, ipcMain }                 from 'electron';
+import fs                               from 'fs';
+import path                             from 'node:path';
+import { RegisteredSessions }           from './SFTPHandlers';
 
-export const sessionsPath = path.join(app.getPath('userData'), 'sessions.json');
+export const sessionsPath = path.join( app.getPath( 'userData' ), 'sessions.json' );
 
 /**
  * Create a session ID.
  * @returns {string} The session ID.
  */
 function createSessionId(): string {
-    return 's-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    return 'session-' + Math.random().toString( 36 ).substring( 2, 15 );
 }
 
 /**
@@ -28,8 +27,8 @@ function createSessionId(): string {
  * @param {string} sessionId The ID of the session to extract sensitive information from.
  * @returns {ISSHSessionSafe | null} The sensitive information.
  */
-function excludeSensitiveProperties(sessionId: string): ISSHSessionSafe | null {
-    const session = RegisteredSessions.get(sessionId);
+function excludeSensitiveProperties( sessionId: string ): ISSHSessionSafe | null {
+    const session = RegisteredSessions.get( sessionId );
 
     if ( !session )
         return null;
@@ -50,68 +49,66 @@ function excludeSensitiveProperties(sessionId: string): ISSHSessionSafe | null {
  * @param {string} sessionUID The UID of the session to get information about.
  * @returns {IRegisteredSession} The information about the session.
  */
-ipcMain.handle(EVENTS.SESSIONS.INFO, (_, sessionUID: string): (ISSHSessionSafe | null) => {
-    return excludeSensitiveProperties(sessionUID);
-});
+ipcMain.handle( EVENTS.SESSIONS.INFO, ( _, sessionUID: string ): ( ISSHSessionSafe | null ) => {
+    return excludeSensitiveProperties( sessionUID );
+} );
 
 /**
  * List all registered sessions.
  * @returns {string[]} The list of all registered sessions.
  */
-ipcMain.handle(EVENTS.SESSIONS.LIST, (): ISSHSessionSafe[] => {
-    return Array.from(RegisteredSessions.keys())
-                .map(excludeSensitiveProperties)
-                .filter((session) => session !== null);
-});
+ipcMain.handle( EVENTS.SESSIONS.LIST, (): ISSHSessionSafe[] => {
+    return Array.from( RegisteredSessions.keys() )
+                .map( excludeSensitiveProperties )
+                .filter( ( session ) => session !== null );
+} );
 
 /**
  * Remove a session from the registered sessions.
  * @param {string} sessionUID The UID of the session to remove.
  */
-ipcMain.handle(EVENTS.SESSIONS.REMOVE, (event, sessionUID: string) => {
-    RegisteredSessions.delete(sessionUID);
-    event.sender.send(EVENTS.SESSIONS.REMOVED);
+ipcMain.handle( EVENTS.SESSIONS.REMOVE, ( event, sessionUID: string ) => {
+    RegisteredSessions.delete( sessionUID );
+    event.sender.send( EVENTS.SESSIONS.REMOVED );
 
     let sessions: ISSHSession[] = [];
-    if ( !fs.existsSync(sessionsPath) ) {
-        fs.writeFileSync(sessionsPath, '[]');
-    }
-    else {
+    if ( !fs.existsSync( sessionsPath ) ) {
+        fs.writeFileSync( sessionsPath, '[]' );
+    } else {
         try {
-            sessions = JSON.parse(fs.readFileSync(sessionsPath).toString());
-        } catch (e) {
+            sessions = JSON.parse( fs.readFileSync( sessionsPath ).toString() );
+        } catch ( e ) {
             sessions = [];
         }
     }
-    sessions = sessions.filter((session) => session.uid !== sessionUID);
-    fs.writeFileSync(sessionsPath, JSON.stringify(sessions));
-});
+    sessions = sessions.filter( ( session ) => session.uid !== sessionUID );
+    fs.writeFileSync( sessionsPath, JSON.stringify( sessions ) );
+} );
 
 /**
  * Add a session to the registered sessions.
  */
-ipcMain.handle(EVENTS.SESSIONS.CREATE, (event, session: ISSHSession) => {
+ipcMain.handle( EVENTS.SESSIONS.CREATE, ( event, session: ISSHSession ) => {
     const sessionId = createSessionId();
-    RegisteredSessions.set(sessionId, {
-        session: Object.assign(session, { uid: sessionId }),
+    RegisteredSessions.set( sessionId, {
+        session: Object.assign( session, { uid: sessionId } ),
         status: 'idle',
         shells: new Map()
-    });
+    } );
     let sessions: ISSHSession[] = [];
-    if ( !fs.existsSync(sessionsPath) ) {
-        fs.writeFileSync(sessionsPath, '[]');
-    }
-    else {
+    if ( !fs.existsSync( sessionsPath ) ) {
+        fs.writeFileSync( sessionsPath, '[]' );
+    } else {
         try {
-            sessions = JSON.parse(fs.readFileSync(sessionsPath).toString());
-            console.error(sessions);
-        } catch (e) {
+            sessions = JSON.parse( fs.readFileSync( sessionsPath ).toString() );
+            console.error( sessions );
+        } catch ( e ) {
             sessions = [];
         }
     }
 
-    sessions.push(session);
-    fs.writeFileSync(sessionsPath, JSON.stringify(sessions));
+    sessions.push( session );
+    fs.writeFileSync( sessionsPath, JSON.stringify( sessions ) );
 
-    event.sender.send(EVENTS.SESSIONS.CREATED, sessionId);
-});
+    event.sender.send( EVENTS.SESSIONS.CREATED, sessionId );
+} );

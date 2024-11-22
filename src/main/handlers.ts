@@ -6,3 +6,4 @@
 
 import './impl/LocalFSHandlers';
 import './impl/SFTPHandlers';
+import './impl/CommandSnippetHandlers';

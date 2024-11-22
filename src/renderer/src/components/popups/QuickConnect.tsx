@@ -3,9 +3,9 @@
  * @author Luca Warmenhoven
  * @date Created on Sunday, November 17 - 15:39
  */
-import { PopupHeader }                      from "@renderer/components/popups/PopupHeader";
-import { Form, FormInput, FormTextArea }    from "@renderer/components/interactive/Form";
-import { FormEvent, useCallback, useState } from "react";
+import { Form, FormInput, FormTextArea, SubmitButton } from '@renderer/components/interactive/Form';
+import { PopupHeader }                                 from '@renderer/components/popups/PopupHeader';
+import { FormEvent, useCallback, useState }            from 'react';
 
 export function QuickConnect() {
 
@@ -49,9 +49,7 @@ export function QuickConnect() {
 
                 <span className="my-0.5 text-xs text-red-600">{errorMessage}</span>
 
-                <FormInput value="Quick Connect"
-                           type="submit"
-                           className="hover:bg-hover transition-colors duration-200 hover:text-special cursor-pointer"/>
+                <SubmitButton title="Quick Connect" />
             </Form>
         </div>
     )

@@ -1,10 +1,9 @@
-import { contextBridge } from 'electron'
-import { electronAPI }   from '@electron-toolkit/preload'
-import { IFileEntry }    from "@/common/file-information";
-import { ISSHSession }   from "@/common/ssh-definitions";
-import path              from "node:path";
-
-import EVENTS from '@/common/events.json';
+import EVENTS                           from '@/common/events.json';
+import { IFileEntry }                   from '@/common/file-information';
+import { ICommandSnippet, ISSHSession } from '@/common/ssh-definitions';
+import { electronAPI }                  from '@electron-toolkit/preload';
+import { contextBridge }                from 'electron';
+import path                             from 'node:path';
 
 contextBridge.exposeInMainWorld('electron', electronAPI);
 contextBridge.exposeInMainWorld('api', {
@@ -92,6 +91,30 @@ contextBridge.exposeInMainWorld('api', {
              */
             getContent: async (sessionId: string, shellId: string) => {
                 return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.GET_CONTENT, sessionId, shellId)
+            },
+
+            snippets: {
+                /**
+                 * Returns a list of registered command snippets
+                 */
+                list: async (): Promise<ICommandSnippet[]> => {
+                    return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.SNIPPET.LIST );
+                },
+                /**
+                 * Creates a new command snippet
+                 * @param snippet
+                 */
+                create: ( snippet: Omit<ICommandSnippet, 'snippetId'> ): void => {
+                    electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.SNIPPET.CREATE, snippet );
+                },
+                /**
+                 * Removes a snippet from the registered command snippets list,
+                 * based on its snippetId.
+                 * @param snippetId The snippet ID to remove.
+                 */
+                remove: ( snippetId: string ): void => {
+                    electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.SNIPPET.REMOVE, snippetId );
+                }
             }
         },
 

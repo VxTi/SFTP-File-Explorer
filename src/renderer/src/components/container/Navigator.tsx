@@ -3,8 +3,8 @@
  * @author Luca Warmenhoven
  * @date Created on Thursday, November 07 - 16:35
  */
-import { NavigatorElementPosition, NavigatorElements } from "@renderer/util/services/NavigatorElementRegistrator";
-import { MenuItemElement }                             from "@renderer/components/interactive/MenuItemElement";
+import { NavigatorItem }                               from '@renderer/components/interactive/NavigatorItem';
+import { NavigatorElementPosition, NavigatorElements } from '@renderer/util/services/NavigatorElementRegistrator';
 
 const PositionSpecificStyling: Record<NavigatorElementPosition, string> = {
     'header': 'border-b-[1px]',
@@ -18,7 +18,7 @@ export function NavigationContainer(props: { position: NavigatorElementPosition,
             className={`flex flex-row justify-between items-stretch h-9 text-xs bg-primary border-solid border-primary px-1 ${PositionSpecificStyling[ props.position ]}`}>
             <div className="flex flex-row justify-start items-center">
                 {Object.values(NavigatorElements[ props.position ][ 'left' ]).map((item, index) => (
-                    <MenuItemElement key={index} name={item.title} icon={item.icon} onClick={item.onClick}/>
+                    <NavigatorItem key={ index } name={ item.title } icon={ item.icon } onClick={ item.onClick } />
                 ))}
             </div>
             {props.trulyIsTheNavigator && (
@@ -32,7 +32,7 @@ export function NavigationContainer(props: { position: NavigatorElementPosition,
             )}
             <div className="flex flex-row justify-end items-center">
                 {Object.values(NavigatorElements[ props.position ][ 'right' ]).map((item, index) => (
-                    <MenuItemElement key={index} name={item.title} icon={item.icon} onClick={item.onClick}/>
+                    <NavigatorItem key={ index } name={ item.title } icon={ item.icon } onClick={ item.onClick } />
                 ))}
             </div>
         </div>

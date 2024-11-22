@@ -3,7 +3,7 @@
  * @author Luca Warmenhoven
  * @date Created on Friday, November 01 - 15:10
  */
-import { CSSProperties, ReactNode } from "react";
+import { CSSProperties, ReactNode } from 'react';
 
 export interface ButtonProps {
     onClick?: () => void;

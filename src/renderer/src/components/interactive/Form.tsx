@@ -3,8 +3,8 @@
  * @author Luca Warmenhoven
  * @date Created on Monday, November 04 - 00:19
  */
-import { CSSProperties, FormEvent, ReactNode, useState } from "react";
-import { CheckIcon }                                     from "lucide-react";
+import { CheckIcon }                                     from 'lucide-react';
+import { CSSProperties, FormEvent, ReactNode, useState } from 'react';
 
 export interface FormProps {
     children: ReactNode
@@ -29,6 +29,15 @@ export function FormRow(props: { children: ReactNode, className?: string }) {
             {props.children}
         </div>
     )
+}
+
+export function SubmitButton( props: { title: string } ) {
+    return (
+        <input type="submit"
+               className="py-1 px-2 placeholder-text-secondary rounded-md grow focus:outline-none bg-secondary border-[1px] border-solid border-primary focus:border-theme-special hover:bg-hover transition-colors duration-200 hover:text-special cursor-pointer"
+               value={ props.title }
+        />
+    );
 }
 
 export function FormInput(props: any) {
