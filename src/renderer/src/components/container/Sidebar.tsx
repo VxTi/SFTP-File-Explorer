@@ -6,7 +6,7 @@
 
 import { App }                  from '@/common/app';
 import EVENTS                   from '@/common/events.json';
-import { ISSHSessionSafe }      from '@/common/ssh-definitions';
+import { ISSHSessionSecure }    from '@/common/ssh-definitions';
 import { ResizableContainer }   from '@renderer/components/container/ResizableContainer';
 import { CreateCommandSnippet } from '@renderer/components/popups/CreateCommandSnippet';
 import { CreateSession }        from '@renderer/components/popups/CreateSession';
@@ -159,7 +159,7 @@ function SidebarItem( props: SidebarItemProps ) {
     );
 }
 
-function SessionItem( props: { session: ISSHSessionSafe } ) {
+function SessionItem( props: { session: ISSHSessionSecure } ) {
 
     const { authorize } = useContext( SFTPContext );
     const { setPopup } = useContext( PopupContext );
@@ -170,7 +170,7 @@ function SessionItem( props: { session: ISSHSessionSafe } ) {
                 type: 'item', title: 'Edit', onClick: () =>
                     setPopup( { uid: 'edit-session', content: <CreateSession session={ props.session } /> } )
             },
-            { type: 'item', title: 'Delete', onClick: () => window.api.sessions.remove( props.session.sessionId ) }
+            { type: 'item', title: 'Delete', onClick: () => window.api.sessions.remove( props.session.uid ) }
         ] }>
             { ( ref ) => (
                 <div
@@ -179,7 +179,7 @@ function SessionItem( props: { session: ISSHSessionSafe } ) {
                     style={ {
                         gridTemplateColumns: '25px 1fr'
                     } }
-                    onClick={ () => authorize( props.session.sessionId ) }>
+                    onClick={ () => authorize( props.session.uid ) }>
                     { props.session.requiresFingerprintVerification && (
                         <FingerprintIcon size={ 24 } className="text-primary p-1" />
 

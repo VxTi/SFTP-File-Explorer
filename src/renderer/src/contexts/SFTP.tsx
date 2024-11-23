@@ -7,7 +7,7 @@ import EVENTS                                                                   
 import {
     IClient,
     ICommandSnippet,
-    ISSHSessionSafe
+    ISSHSessionSecure
 }                                                                                               from '@/common/ssh-definitions';
 import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useEffect, useState } from 'react';
 
@@ -22,7 +22,7 @@ interface SFTPContextType {
     status: SFTPConnectionStatus,
     setStatus: Dispatch<SetStateAction<SFTPConnectionStatus>>,
     sessionId: string | null,
-    sessions: ISSHSessionSafe[],
+    sessions: ISSHSessionSecure[],
     authorize: ( sessionId: string ) => void,
     createShell: () => Promise<void>
     shellId: string | null,
@@ -32,15 +32,15 @@ interface SFTPContextType {
 export const SFTPContext = createContext<SFTPContextType>(
     {
         commandSnippets: [],
-        authorize: () => 0,
-        sessions: [],
-        clients: { local: null, remote: null },
-        status: 'disconnected',
-        setStatus: () => 0,
-        sessionId: null,
+        authorize:   () => 0,
+        sessions:    [],
+        clients:     { local: null, remote: null },
+        status:      'disconnected',
+        setStatus:   () => 0,
+        sessionId:   null,
         createShell: async () => void 0,
-        shellId: null,
-        setShellID: () => 0
+        shellId:     null,
+        setShellID:  () => 0
     } );
 
 /**
@@ -55,12 +55,12 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
 
     const [ snippets, setSnippets ] = useState<ICommandSnippet[]>( [] );
 
-    const [ sessions, setSessions ] = useState<ISSHSessionSafe[]>( [] );
+    const [ sessions, setSessions ] = useState<ISSHSessionSecure[]>( [] );
 
     const [ shellId, setShellId ] = useState<string | null>( null );
 
     const [ sessionId, setSessionId ] = useState<string | null>( null );
-    const [ status, setStatus ] = useState<SFTPConnectionStatus>( 'disconnected' );
+    const [ status, setStatus ]     = useState<SFTPConnectionStatus>( 'disconnected' );
 
     const [ localCwd, setLocalCwd ] = useState<string>( window.api.fs.localHomeDir );
     const [ remoteCwd, setRemoteCwd ] = useState<string>( '/' );
@@ -75,7 +75,7 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
         window.api.on( EVENTS.SESSIONS.LIST_CHANGED, () => {
             window.api.sessions.list()
                   .then( setSessions );
-        } )
+        } );
 
         window.api.on( EVENTS.SFTP.SHELL.SNIPPET.LIST_CHANGED, () => {
             window.api.sftp.shell.snippets.list()
@@ -126,15 +126,15 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
 
         setLocalClient(
             {
-                cwd: localCwd,
-                setCwd: setLocalCwd,
-                homeDir: window.api.fs.localHomeDir,
+                cwd:       localCwd,
+                setCwd:    setLocalCwd,
+                homeDir:   window.api.fs.localHomeDir,
                 listFiles: window.api.fs.listFiles,
                 appendFile: async ( absolutePath: string, content: string ) => {
                 },
-                rmFile: async ( absolutePath: string ) => {
+                rmFile:    async ( absolutePath: string ) => {
                 },
-                mkdir: async ( absolutePath: string ) => {
+                mkdir:     async ( absolutePath: string ) => {
                 }
             } );
 
@@ -143,15 +143,15 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
                   setRemoteCwd( () => {
                       setRemoteClient(
                           {
-                              cwd: remoteHomeDir,
-                              setCwd: setRemoteCwd,
-                              homeDir: remoteHomeDir,
+                              cwd:       remoteHomeDir,
+                              setCwd:    setRemoteCwd,
+                              homeDir:   remoteHomeDir,
                               listFiles: ( cwd ) => window.api.sftp.listFiles( sessionId, cwd ),
                               appendFile: async ( absolutePath: string, content: string ) => {
                               },
-                              rmFile: async ( absolutePath: string ) => {
+                              rmFile:    async ( absolutePath: string ) => {
                               },
-                              mkdir: async ( absolutePath: string ) => {
+                              mkdir:     async ( absolutePath: string ) => {
                               }
                           } );
                       return remoteHomeDir;
@@ -163,7 +163,7 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
     return (
         <SFTPContext.Provider value={ {
             commandSnippets: snippets,
-            clients: { local: localClient, remote: remoteClient },
+            clients:    { local: localClient, remote: remoteClient },
             sessions,
             shellId,
             setShellID: setShellId,

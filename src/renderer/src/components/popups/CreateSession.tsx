@@ -3,7 +3,7 @@
  * @author Luca Warmenhoven
  * @date Created on Sunday, November 10 - 14:12
  */
-import { ISSHSessionSafe }                                      from '@/common/ssh-definitions';
+import { ISSHSessionSecure }                                    from '@/common/ssh-definitions';
 import { Form, FormCheckbox, FormInput, SubmitButton }          from '@renderer/components/interactive/Form';
 import { PopupHeader }                                          from '@renderer/components/popups/PopupHeader';
 import { PopupContext }                                         from '@renderer/contexts/Popups';
@@ -15,7 +15,7 @@ import { FormEvent, useCallback, useContext, useRef, useState } from 'react';
  * Popup to add a new session
  * @constructor
  */
-export function CreateSession( props: { session?: ISSHSessionSafe } ) {
+export function CreateSession( props: { session?: ISSHSessionSecure } ) {
     const { setPopup } = useContext( PopupContext );
     const { sessions } = useContext( SFTPContext );
 
@@ -28,7 +28,7 @@ export function CreateSession( props: { session?: ISSHSessionSafe } ) {
         event.preventDefault();
 
         // Acquire values from form event
-        const target = event.currentTarget as HTMLFormElement;
+        const target   = event.currentTarget as HTMLFormElement;
         const formData = new FormData( target );
         const formObject: Record<string, FormDataEntryValue> = Object.fromEntries( formData.entries() );
 
@@ -48,15 +48,28 @@ export function CreateSession( props: { session?: ISSHSessionSafe } ) {
             return;
         }
 
+        if ( props.session ) {
+            window.api.sessions.update(
+                {
+                    hostAddress: formObject[ 'host' ] as string || props.session.hostAddress,
+                    port:        parseInt( formObject[ 'port' ] as string || '22' ),
+                    username:    formObject[ 'username' ] as string,
+                    uid:         props.session.uid,
+                    status:      props.session.status
+                }
+            );
+            return;
+        }
+
         window.api.sessions.create(
             {
-                hostAddress: formObject[ 'host' ] as string,
-                port: parseInt( formObject[ 'port' ] as string ) ?? 22,
-                username: formObject[ 'username' ] as string,
-                password: formObject[ 'password' ] as string,
+                hostAddress:    formObject[ 'host' ] as string,
+                port:           parseInt( formObject[ 'port' ] as string || '22' ),
+                username:       formObject[ 'username' ] as string,
+                password:       formObject[ 'password' ] as string,
                 privateKeyFile: ( formObject[ 'private-key-file' ] as File ).path,
-                passphrase: formObject[ 'passphrase' ] as string,
-                alias: formObject[ 'alias' ] as string,
+                passphrase:     formObject[ 'passphrase' ] as string,
+                alias:          formObject[ 'alias' ] as string,
                 requiresFingerprintVerification: formObject[ 'fingerprint' ] === 'on'
             }
         );

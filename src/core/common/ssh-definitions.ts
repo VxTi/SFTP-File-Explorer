@@ -137,35 +137,6 @@ export interface IShell {
 }
 
 /**
- * SSH Session Safe interface.
- * This interface houses information regarding SSH sessions that are safe to store.
- * This interface differs from the `ISSHSession` interface in that it does not contain sensitive information,
- * and thus can be shared to the renderer process.
- */
-export interface ISSHSessionSafe {
-    /** The unique identifier of the session */
-    sessionId: string;
-
-    /** The username to connect with */
-    username: string;
-
-    /** The host address to connect to */
-    hostAddress: string;
-
-    /** The port to connect to */
-    port: number;
-
-    /** Whether the session requires fingerprint verification */
-    requiresFingerprintVerification?: boolean;
-
-    /** The alias to connect with */
-    alias?: string;
-
-    /** The connection status of the session */
-    status: TConnectionStatus;
-}
-
-/**
  * SSH Session interface.
  * This interface houses information regarding SSH sessions.
  */
@@ -216,3 +187,5 @@ export interface ISSHSession {
      */
     alias?: string;
 }
+
+export type ISSHSessionSecure = Omit<ISSHSession & { status: TConnectionStatus }, 'password' | 'passphrase'>;

@@ -1,4 +1,4 @@
-import { ICommandSnippet, ISSHSessionSafe }             from '@/common/ssh-definitions';
+import { ICommandSnippet, ISSHSessionSecure }           from '@/common/ssh-definitions';
 import { Form, FormInput, FormTextArea, SubmitButton }  from '@renderer/components/interactive/Form';
 import { PopupHeader }                                  from '@renderer/components/popups/PopupHeader';
 import { PopupContext }                                 from '@renderer/contexts/Popups';
@@ -19,7 +19,7 @@ export function CreateCommandSnippet( props: { snippet?: ICommandSnippet } ) {
     const handleSubmit = useCallback( ( event: FormEvent ) => {
         event.preventDefault();
 
-        const target = event.currentTarget as HTMLFormElement;
+        const target   = event.currentTarget as HTMLFormElement;
         const formData = new FormData( target );
         const formObject: Record<string, FormDataEntryValue> = Object.fromEntries( formData.entries() );
 
@@ -34,12 +34,12 @@ export function CreateCommandSnippet( props: { snippet?: ICommandSnippet } ) {
         }
 
         window.api.sftp.shell.snippets.create( {
-            title: formObject.title,
-            command: formObject.command,
-            runOnConnect: Object.values( formObject )
-                                .filter( entry =>
-                                    ( entry as string ) === 'on' ) as string[]
-        } as Omit<ICommandSnippet, 'snippetId'> );
+                                                   title:        formObject.title,
+                                                   command:      formObject.command,
+                                                   runOnConnect: Object.values( formObject )
+                                                                       .filter( entry =>
+                                                                                    ( entry as string ) === 'on' ) as string[]
+                                               } as Omit<ICommandSnippet, 'snippetId'> );
 
         setPopup( undefined );
 
@@ -81,7 +81,7 @@ export function CreateCommandSnippet( props: { snippet?: ICommandSnippet } ) {
     );
 }
 
-function SessionEntry( props: { session: ISSHSessionSafe } ) {
+function SessionEntry( props: { session: ISSHSessionSecure } ) {
     const [ selected, setSelected ] = useState<boolean>( false );
     return (
         <>

@@ -25,6 +25,7 @@
           "SNIPPET": {
             "CREATE": "sftp::shell::snippet::create",
             "REMOVE": "sftp::shell::snippet::remove",
+            "UPDATE": "sftp::shell::snippet::update",
             "LIST_CHANGED": "sftp::shell::snippet::changes",
             "LIST": "sftp::shell::snippet::list"
           }

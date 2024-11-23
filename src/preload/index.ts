@@ -1,60 +1,64 @@
-import EVENTS                           from '@/common/events.json';
-import { IFileEntry }                   from '@/common/file-information';
-import { ICommandSnippet, ISSHSession } from '@/common/ssh-definitions';
-import { electronAPI }                  from '@electron-toolkit/preload';
-import { contextBridge }                from 'electron';
-import path                             from 'node:path';
+import EVENTS                                              from '@/common/events.json';
+import { IFileEntry }                                      from '@/common/file-information';
+import { ICommandSnippet, ISSHSession, ISSHSessionSecure } from '@/common/ssh-definitions';
+import { electronAPI }                                     from '@electron-toolkit/preload';
+import { contextBridge }                                   from 'electron';
+import path                                                from 'node:path';
 
-contextBridge.exposeInMainWorld('electron', electronAPI);
-contextBridge.exposeInMainWorld('api', {
-    on: (channel: string, listener: (...args: any[]) => void) => {
-        electronAPI.ipcRenderer.on(channel, listener)
+contextBridge.exposeInMainWorld( 'electron', electronAPI );
+contextBridge.exposeInMainWorld( 'api', {
+    on:       ( channel: string, listener: ( ...args: any[] ) => void ) => {
+        electronAPI.ipcRenderer.on( channel, listener );
     },
     sessions: {
         /**
          * Lists all SSH sessions
          */
         list: async () => {
-            return await electronAPI.ipcRenderer.invoke(EVENTS.SESSIONS.LIST)
+            return await electronAPI.ipcRenderer.invoke( EVENTS.SESSIONS.LIST );
         },
 
         /**
          * Creates a new SSH session
          * @param session The session to create
          */
-        create: async (session: Omit<ISSHSession, 'uid'>) => {
-            await electronAPI.ipcRenderer.invoke(EVENTS.SESSIONS.CREATE, session)
+        create: async ( session: Omit<ISSHSession, 'uid'> ) => {
+            await electronAPI.ipcRenderer.invoke( EVENTS.SESSIONS.CREATE, session );
         },
 
         /**
          * Removes an SSH session
          * @param sessionId The session ID of the session to remove
          */
-        remove: async (sessionId: string) => {
-            await electronAPI.ipcRenderer.invoke(EVENTS.SESSIONS.REMOVE, sessionId)
+        remove: async ( sessionId: string ) => {
+            await electronAPI.ipcRenderer.invoke( EVENTS.SESSIONS.REMOVE, sessionId );
         },
+
+        update: async ( session: ISSHSessionSecure ) => {
+            await electronAPI.ipcRenderer.invoke( EVENTS.SESSIONS.UPDATE, session );
+        }
     },
-    fs: {
+    fs:       {
 
         /**
          * Lists files in a directory
          * @param targetPath The path to list files in
          */
-        listFiles: async (targetPath: string): Promise<IFileEntry[]> => {
-            return await electronAPI.ipcRenderer.invoke(EVENTS.LOCAL_FS.LIST_FILES, targetPath)
+        listFiles:    async ( targetPath: string ): Promise<IFileEntry[]> => {
+            return await electronAPI.ipcRenderer.invoke( EVENTS.LOCAL_FS.LIST_FILES, targetPath );
         },
-        localHomeDir: electronAPI.ipcRenderer.sendSync(EVENTS.LOCAL_FS.HOME_DIRECTORY),
-        separator: path.sep
+        localHomeDir: electronAPI.ipcRenderer.sendSync( EVENTS.LOCAL_FS.HOME_DIRECTORY ),
+        separator:    path.sep
     },
-    sftp: {
+    sftp:     {
         shell: {
 
             /**
              * Creates a shell on the SFTP server
              * @param sessionUid The session ID of the SFTP server
              */
-            create: async (sessionUid: string) => {
-                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.CREATE, sessionUid)
+            create: async ( sessionUid: string ) => {
+                return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.CREATE, sessionUid );
             },
 
             /**
@@ -62,8 +66,8 @@ contextBridge.exposeInMainWorld('api', {
              * @param sessionId The session ID of the shell
              * @param shellId The shell ID
              */
-            destroy: async (sessionId: string, shellId: string) => {
-                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.DESTROY, sessionId, shellId)
+            destroy: async ( sessionId: string, shellId: string ) => {
+                return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.DESTROY, sessionId, shellId );
             },
 
             /**
@@ -72,16 +76,16 @@ contextBridge.exposeInMainWorld('api', {
              * @param shellId The shell ID
              * @param command The command to execute
              */
-            exec: async (sessionId: string, shellId: string, command: string) => {
-                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.EXEC, sessionId, shellId, command)
+            exec: async ( sessionId: string, shellId: string, command: string ) => {
+                return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.EXEC, sessionId, shellId, command );
             },
 
             /**
              * Lists all shells associated with the provided session ID
              * @param sessionId The session ID of the shell
              */
-            listShells: async (sessionId: string) => {
-                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.LIST_SHELLS, sessionId)
+            listShells: async ( sessionId: string ) => {
+                return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.LIST_SHELLS, sessionId );
             },
 
             /**
@@ -89,8 +93,8 @@ contextBridge.exposeInMainWorld('api', {
              * @param sessionId The session ID of the shell
              * @param shellId The shell ID
              */
-            getContent: async (sessionId: string, shellId: string) => {
-                return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.SHELL.GET_CONTENT, sessionId, shellId)
+            getContent: async ( sessionId: string, shellId: string ) => {
+                return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.GET_CONTENT, sessionId, shellId );
             },
 
             snippets: {
@@ -122,16 +126,16 @@ contextBridge.exposeInMainWorld('api', {
          * Connects to an SFTP server
          * @param sessionId The session ID of the SFTP server
          */
-        connect: async (sessionId: string): Promise<{ sessionId: string | null, error: string | null }> => {
-            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.ESTABLISH_CONNECTION, sessionId)
+        connect: async ( sessionId: string ): Promise<{ sessionId: string | null, error: string | null }> => {
+            return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.ESTABLISH_CONNECTION, sessionId );
         },
 
         /**
          * Gets the home directory of the SFTP server
          * @param sessionId The session ID of the SFTP server
          */
-        homeDir: async (sessionId: string): Promise<string> => {
-            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.HOME_DIR, sessionId)
+        homeDir: async ( sessionId: string ): Promise<string> => {
+            return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.HOME_DIR, sessionId );
         },
 
         /**
@@ -139,8 +143,8 @@ contextBridge.exposeInMainWorld('api', {
          * @param sessionId The session ID of the SFTP server
          * @param targetPath The path to list files in
          */
-        listFiles: async (sessionId: string, targetPath: string): Promise<IFileEntry[]> => {
-            return await electronAPI.ipcRenderer.invoke(EVENTS.SFTP.LIST_FILES, sessionId, targetPath)
+        listFiles: async ( sessionId: string, targetPath: string ): Promise<IFileEntry[]> => {
+            return await electronAPI.ipcRenderer.invoke( EVENTS.SFTP.LIST_FILES, sessionId, targetPath );
         }
     }
-})
+} );

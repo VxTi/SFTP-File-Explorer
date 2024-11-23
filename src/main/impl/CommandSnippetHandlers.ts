@@ -1,39 +1,15 @@
 import EVENTS              from '@/common/events.json';
 import { ICommandSnippet } from '@/common/ssh-definitions';
-import { app, ipcMain }    from 'electron';
-import fs                  from 'fs';
-import path                from 'node:path';
+import { ipcMain }         from 'electron';
+import { ConfigFile }      from '../fs/ConfigFile';
 
-const snippetsPath = path.join( app.getPath( 'userData' ), 'snippets.json' );
-
-/** Map of registered snippets, where the key represents the snippet ID */
-const RegisteredSnippets: Record<string, Omit<ICommandSnippet, 'snippetId'>> = ( () => {
-    const registeredSnippets: Record<string, Omit<ICommandSnippet, 'snippetId'>> = {};
-
-    if ( !fs.existsSync( snippetsPath ) ) {
-        fs.writeFileSync( snippetsPath, '{}' );
-        return registeredSnippets;
-    }
-
-    const content: string = fs.readFileSync( snippetsPath, 'utf-8' );
-
-    const parsedContent: Record<string, Omit<ICommandSnippet, 'snippetId'>> = JSON.parse( content );
-
-    Object.entries( parsedContent )
-          .forEach( ( [ key, value ] ) =>
-              registeredSnippets[ key ] = value );
-
-    return registeredSnippets;
-} )();
-
-const generateSnippetId = () => Math.random().toString( 36 ).substring( 2, 9 );
+const minimumSnippetTitleLength = 3;
+const CommandSnippetsConfig     = new ConfigFile<Omit<ICommandSnippet, 'snippetId'>>( { fileName: 'snippets.json' } );
 
 ipcMain.handle( EVENTS.SFTP.SHELL.SNIPPET.LIST, () => {
-    return Object.entries( RegisteredSnippets )
-                 .map( ( [ key, value ] ) => ( {
-                         ...value,
-                         snippetId: key
-                     } as ICommandSnippet )
+    return Object.entries( CommandSnippetsConfig.value )
+                 .map( ( [ key, value ] ) =>
+                           ( { ...value, snippetId: key } as ICommandSnippet )
                  );
 } );
 
@@ -44,12 +20,7 @@ ipcMain.handle( EVENTS.SFTP.SHELL.SNIPPET.LIST, () => {
  * list.
  */
 ipcMain.handle( EVENTS.SFTP.SHELL.SNIPPET.CREATE, ( event, snippet: Omit<ICommandSnippet, 'snippetId'> ) => {
-    const snippetId = generateSnippetId();
-    RegisteredSnippets[ snippetId ] = snippet;
-
-    fs.writeFileSync( snippetsPath, JSON.stringify( RegisteredSnippets ) );
-    console.log( RegisteredSnippets );
-
+    CommandSnippetsConfig.set( ConfigFile.randomKey(), snippet );
     event.sender.send( EVENTS.SFTP.SHELL.SNIPPET.LIST_CHANGED );
 } );
 
@@ -59,10 +30,22 @@ ipcMain.handle( EVENTS.SFTP.SHELL.SNIPPET.CREATE, ( event, snippet: Omit<IComman
  * If the snippet was removed successfully, a `LIST_CHANGED` event will be emitted.
  */
 ipcMain.handle( EVENTS.SFTP.SHELL.SNIPPET.REMOVE, ( event, snippetId: string ) => {
-    if ( !RegisteredSnippets[ snippetId ] )
+    if ( !CommandSnippetsConfig.valueAt( snippetId ) )
         return;
 
-    delete RegisteredSnippets[ snippetId ];
-    fs.writeFileSync( snippetsPath, JSON.stringify( RegisteredSnippets ) );
+    CommandSnippetsConfig.remove( snippetId );
+    event.sender.send( EVENTS.SFTP.SHELL.SNIPPET.LIST_CHANGED );
+} );
+
+/**
+ * Updates an existing command snippet in the config.
+ */
+ipcMain.handle( EVENTS.SFTP.SHELL.SNIPPET.UPDATE, ( event, snippet: ICommandSnippet ) => {
+    if ( !CommandSnippetsConfig.valueAt( snippet.snippetId ) ||
+         snippet.title.trim.length < minimumSnippetTitleLength ||
+         snippet.command.length === 0 )
+        return;
+
+    CommandSnippetsConfig.set( snippet.snippetId, { ...snippet } as ICommandSnippet );
     event.sender.send( EVENTS.SFTP.SHELL.SNIPPET.LIST_CHANGED );
 } );
