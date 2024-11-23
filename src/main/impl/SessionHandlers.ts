@@ -69,7 +69,7 @@ ipcMain.handle( EVENTS.SESSIONS.LIST, (): ISSHSessionSafe[] => {
  */
 ipcMain.handle( EVENTS.SESSIONS.REMOVE, ( event, sessionUID: string ) => {
     RegisteredSessions.delete( sessionUID );
-    event.sender.send( EVENTS.SESSIONS.REMOVED );
+    event.sender.send( EVENTS.SESSIONS.LIST_CHANGED );
 
     let sessions: ISSHSession[] = [];
     if ( !fs.existsSync( sessionsPath ) ) {
@@ -110,5 +110,25 @@ ipcMain.handle( EVENTS.SESSIONS.CREATE, ( event, session: ISSHSession ) => {
     sessions.push( session );
     fs.writeFileSync( sessionsPath, JSON.stringify( sessions ) );
 
-    event.sender.send( EVENTS.SESSIONS.CREATED, sessionId );
+    event.sender.send( EVENTS.SESSIONS.LIST_CHANGED );
+} );
+
+/**
+ * Updates properties of an existing session, given a session object.
+ */
+ipcMain.handle( EVENTS.SESSIONS.UPDATE, ( event, session: ISSHSessionSafe ) => {
+
+    // If the session doesn't exist for some reason, just exit.
+    if ( !RegisteredSessions.has( session.sessionId ) )
+        return;
+
+    const storedSession   = RegisteredSessions.get( session.sessionId )!;
+    storedSession.session = {
+        ...storedSession.session,
+        port:                            session.port || 22,
+        alias:                           session.alias,
+        requiresFingerprintVerification: session.requiresFingerprintVerification,
+        hostAddress:                     session.hostAddress
+    };
+    event.sender.send( EVENTS.SESSIONS.LIST_CHANGED );
 } );

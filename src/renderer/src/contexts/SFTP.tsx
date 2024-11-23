@@ -72,14 +72,10 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
         window.api.sftp.shell.snippets.list()
               .then( setSnippets );
 
-        window.api.on( EVENTS.SESSIONS.CREATED, () => {
+        window.api.on( EVENTS.SESSIONS.LIST_CHANGED, () => {
             window.api.sessions.list()
                   .then( setSessions );
-        } );
-        window.api.on( EVENTS.SESSIONS.REMOVED, () => {
-            window.api.sessions.list()
-                  .then( setSessions );
-        } );
+        } )
 
         window.api.on( EVENTS.SFTP.SHELL.SNIPPET.LIST_CHANGED, () => {
             window.api.sftp.shell.snippets.list()

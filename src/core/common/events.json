@@ -3,9 +3,9 @@
         "LIST": "sessions::list",
         "INFO": "sessions::info",
         "CREATE": "sessions::create",
-        "CREATED": "sessions::created",
         "REMOVE": "sessions::remove",
-        "REMOVED": "sessions::removed"
+      "LIST_CHANGED": "sessions::changes",
+      "UPDATE": "sessions::update"
     },
     "LOCAL_FS": {
         "LIST_FILES": "local-fs::list-files",

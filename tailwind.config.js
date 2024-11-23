@@ -21,7 +21,7 @@ module.exports = {
                 'bg-primary': 'var(--color-primary)',
             },
             backgroundColor: {
-                'border': 'var(--color-border)',
+              "border": "var(--color-border / var(--tw-background-opacity))",
                 'background': 'var(--color-background)',
                 'primary': 'var(--color-primary)',
                 'special': 'var(--color-special)',

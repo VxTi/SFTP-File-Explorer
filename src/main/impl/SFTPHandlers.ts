@@ -4,14 +4,14 @@
  * @date Created on Wednesday, November 13 - 14:44
  */
 
-import { ipcMain, systemPreferences }                                   from "electron";
-import { IShellMessage, IShellSession, ISSHSession, TConnectionStatus } from "@/common/ssh-definitions";
-import { IFileEntry }                                                   from "@/common/file-information";
-import { Client, ClientChannel, SFTPWrapper }                           from "ssh2";
-import { IpcMainInvokeEvent }                                           from "electron/main";
-import fs                                                               from "fs";
-import { sessionsPath }                                                 from "./SessionHandlers";
 import EVENTS                                                           from '@/common/events.json';
+import { IFileEntry }                                                   from '@/common/file-information';
+import { IShellMessage, IShellSession, ISSHSession, TConnectionStatus } from '@/common/ssh-definitions';
+import { ipcMain, systemPreferences }                                   from 'electron';
+import { IpcMainInvokeEvent }                                           from 'electron/main';
+import fs                                                               from 'fs';
+import { Client, ClientChannel, SFTPWrapper }                           from 'ssh2';
+import { sessionsPath }                                                 from './SessionHandlers';
 
 export interface IRegisteredSession {
     session: ISSHSession;
@@ -270,6 +270,11 @@ ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, sessionId: string
     const privateKeyFileContent = session.privateKeyFile && fs.existsSync(session.privateKeyFile) ?
                                     fs.readFileSync(session.privateKeyFile, 'utf-8') : '';
 
+    const handleDisconnect = () => {
+        sessionObject.status = 'idle';
+        sessionObject.shells.clear();
+    };
+
     return await new Promise((resolve) => {
         client
             .on('ready', () => {
@@ -296,14 +301,8 @@ ipcMain.handle(EVENTS.SFTP.ESTABLISH_CONNECTION, async (event, sessionId: string
                 event.sender.send(EVENTS.SFTP.CONNECTION_REFUSED, { message: error.message });
                 resolve({ sessionId: null, error: error.message });
             })
-            .on('close', () => {
-                sessionObject.status = 'idle';
-                RegisteredSessions.set(session.uid, sessionObject);
-            })
-            .on('end', () => {
-                sessionObject.status = 'idle';
-                RegisteredSessions.set(session.uid, sessionObject);
-            })
+            .on( 'close', () => handleDisconnect() )
+            .on( 'end', () => handleDisconnect() )
             .connect(
                 {
                     host: session.hostAddress,

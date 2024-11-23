@@ -130,7 +130,7 @@ function SidebarList( props: SidebarItemProps ) {
             <div
                 className="flex flex-col justify-start items-stretch gap-1 overflow-hidden transition-all duration-300"
                 style={ {
-                    maxHeight: ( expanded ? ( props.children?.length ?? 1 ) * 25 : 0 ) + 'px',
+                    maxHeight: ( expanded ? ( props.children?.length ?? 1 ) * 40 : 0 ) + 'px',
                     opacity: expanded ? 1 : 0
                 } }>
                 { props.children?.map( ( item, index ) => (
@@ -147,7 +147,7 @@ function SidebarItem( props: SidebarItemProps ) {
 
     return (
         <div
-            className="flex flex-row justify-start rounded-lg h-7 items-center gap-1 hover:cursor-pointer hover:bg-hover transition-colors duration-200"
+            className="flex flex-row justify-start rounded-lg h-8 shrink-0 items-center gap-1 hover:cursor-pointer hover:bg-hover transition-colors duration-200"
             onClick={ () => props.onClick?.() }>
             <div className="ml-8 aspect-square shrink-0 h-6 w-6 p-1 stroke-primary">
                 { props.icon }
@@ -175,7 +175,7 @@ function SessionItem( props: { session: ISSHSessionSafe } ) {
             { ( ref ) => (
                 <div
                     ref={ ref }
-                    className="grid items-center gap-1 pl-8 h-7 rounded-lg hover:cursor-pointer hover:bg-hover transition-colors duration-200"
+                    className="grid items-center gap-1 pl-8 h-8 shrink-0 rounded-lg hover:cursor-pointer hover:bg-hover transition-colors duration-200"
                     style={ {
                         gridTemplateColumns: '25px 1fr'
                     } }
