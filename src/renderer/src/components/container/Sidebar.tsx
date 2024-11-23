@@ -4,8 +4,7 @@
  * @date Created on Friday, November 01 - 16:29
  */
 
-import { App }                  from '@/common/app';
-import EVENTS                   from '@/common/events.json';
+import { App, EVENTS }          from '@/common/app';
 import { ISSHSessionSecure }    from '@/common/ssh-definitions';
 import { ResizableContainer }   from '@renderer/components/container/ResizableContainer';
 import { CreateCommandSnippet } from '@renderer/components/popups/CreateCommandSnippet';
@@ -70,10 +69,10 @@ export function Sidebar() {
                              expanded={ true }
                              appendable={ () =>
                                  setPopup( {
-                                     uid: 'add-session',
-                                     content: <CreateSession />,
-                                     type: 'fullscreen'
-                                 } ) }
+                                               uid:     'add-session',
+                                               content: <CreateSession />,
+                                               type:    'fullscreen'
+                                           } ) }
                              icon={ <WrenchIcon size={ 20 } /> }>
                     { sessions.map( ( session, index ) => (
                         <SessionItem key={ index } session={ session } />
@@ -81,17 +80,19 @@ export function Sidebar() {
                 </SidebarList>
                 <SidebarList title="Command Snippets"
                              appendable={ () => setPopup( {
-                                 uid: 'sidebar-command-snippet',
-                                 content: <CreateCommandSnippet />,
-                                 type: 'fullscreen'
-                             } ) }
+                                                              uid:     'sidebar-command-snippet',
+                                                              content: <CreateCommandSnippet />,
+                                                              type:    'fullscreen'
+                                                          } ) }
                              icon={ <TerminalIcon size={ 20 } /> }>
                     { commandSnippets.map( ( snippet, index ) => (
                         <SidebarItem title={ snippet.title } key={ index } onClick={ () => setPopup( {
-                            uid: 'sidebar-command-snippet',
-                            content: <CreateCommandSnippet snippet={ snippet } />,
-                            type: 'fullscreen'
-                        } ) } />
+                                                                                                         uid:  'sidebar-command-snippet',
+                                                                                                         content:
+                                                                                                               <CreateCommandSnippet
+                                                                                                                   snippet={ snippet } />,
+                                                                                                         type: 'fullscreen'
+                                                                                                     } ) } />
                     ) )
                     }
                 </SidebarList>
@@ -107,7 +108,7 @@ function SidebarList( props: SidebarItemProps ) {
     return (
         <div className="flex flex-col justify-start items-stretch gap-y-1 select-none w-full">
             <div
-                className="flex flex-row justify-start items-center px-0.5 w-full gap-1 max-w-[300px] hover:cursor-pointer hover:bg-hover transition-colors duration-200 rounded-lg">
+                className="flex flex-row justify-start items-center px-0.5 w-full gap-1 max-w-[300px] hover:cursor-pointer hover:bg-hover transition-colors duration-300 rounded-lg">
                 <div onClick={ () => setExpanded( !expanded ) }
                      className="grid place-items-center grow items-center gap-1 py-1.5"
                      style={ {
@@ -124,7 +125,7 @@ function SidebarList( props: SidebarItemProps ) {
                 { props.appendable ? (
                     <PlusIcon size={ 30 }
                               onClick={ props.appendable }
-                              className="hover:bg-hover active:bg-tertiary rounded-md cursor-pointer py-1.5" />
+                              className="active:bg-tertiary rounded-md cursor-pointer py-1.5 duration-300" />
                 ) : null }
             </div>
             <div
@@ -147,7 +148,7 @@ function SidebarItem( props: SidebarItemProps ) {
 
     return (
         <div
-            className="flex flex-row justify-start rounded-lg h-8 shrink-0 items-center gap-1 hover:cursor-pointer hover:bg-hover transition-colors duration-200"
+            className="flex flex-row justify-start rounded-lg h-8 shrink-0 items-center gap-1 hover:cursor-pointer hover:bg-hover transition-colors duration-300"
             onClick={ () => props.onClick?.() }>
             <div className="ml-8 aspect-square shrink-0 h-6 w-6 p-1 stroke-primary">
                 { props.icon }
@@ -175,7 +176,7 @@ function SessionItem( props: { session: ISSHSessionSecure } ) {
             { ( ref ) => (
                 <div
                     ref={ ref }
-                    className="grid items-center gap-1 pl-8 h-8 shrink-0 rounded-lg hover:cursor-pointer hover:bg-hover transition-colors duration-200"
+                    className="grid items-center gap-1 pl-8 h-8 shrink-0 rounded-lg hover:cursor-pointer hover:bg-hover transition-colors duration-300"
                     style={ {
                         gridTemplateColumns: '25px 1fr'
                     } }

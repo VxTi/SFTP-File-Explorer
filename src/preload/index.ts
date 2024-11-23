@@ -1,4 +1,4 @@
-import EVENTS                                              from '@/common/events.json';
+import { EVENTS }                                          from '@/common/app';
 import { IFileEntry }                                      from '@/common/file-information';
 import { ICommandSnippet, ISSHSession, ISSHSessionSecure } from '@/common/ssh-definitions';
 import { electronAPI }                                     from '@electron-toolkit/preload';

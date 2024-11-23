@@ -1,11 +1,14 @@
 {
+    "MESSAGES": {
+        "INTERNAL_ERROR": "message::internal_error"
+    },
     "SESSIONS": {
         "LIST": "sessions::list",
         "INFO": "sessions::info",
         "CREATE": "sessions::create",
         "REMOVE": "sessions::remove",
-      "LIST_CHANGED": "sessions::changes",
-      "UPDATE": "sessions::update"
+        "LIST_CHANGED": "sessions::changes",
+        "UPDATE": "sessions::update"
     },
     "LOCAL_FS": {
         "LIST_FILES": "local-fs::list-files",
@@ -21,14 +24,14 @@
             "ERROR": "sftp::shell-error",
             "LIST_SHELLS": "sftp::list-shells",
             "EXEC": "sftp::shell-execute",
-          "GET_CONTENT": "sftp::shell-get-content",
-          "SNIPPET": {
-            "CREATE": "sftp::shell::snippet::create",
-            "REMOVE": "sftp::shell::snippet::remove",
-            "UPDATE": "sftp::shell::snippet::update",
-            "LIST_CHANGED": "sftp::shell::snippet::changes",
-            "LIST": "sftp::shell::snippet::list"
-          }
+            "GET_CONTENT": "sftp::shell-get-content",
+            "SNIPPET": {
+                "CREATE": "sftp::shell::snippet::create",
+                "REMOVE": "sftp::shell::snippet::remove",
+                "UPDATE": "sftp::shell::snippet::update",
+                "LIST_CHANGED": "sftp::shell::snippet::changes",
+                "LIST": "sftp::shell::snippet::list"
+            }
         },
         "LIST_FILES": "sftp::list-files",
         "HOME_DIR": "sftp::home-dir",

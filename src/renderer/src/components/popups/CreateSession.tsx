@@ -32,6 +32,23 @@ export function CreateSession( props: { session?: ISSHSessionSecure } ) {
         const formData = new FormData( target );
         const formObject: Record<string, FormDataEntryValue> = Object.fromEntries( formData.entries() );
 
+        if ( props.session ) {
+            window.api.sessions.update(
+                {
+                    alias:                           formObject[ 'alias' ] as string,
+                    hostAddress:                     formObject[ 'host' ] as string || props.session.hostAddress,
+                    port:                            parseInt( formObject[ 'port' ] as string || '22' ),
+                    username:                        formObject[ 'username' ] as string,
+                    requiresFingerprintVerification: formObject[ 'fingerprint' ] === 'on',
+                    uid:                             props.session.uid,
+                    status:                          props.session.status,
+                    privateKeyFile:                  ( formObject[ 'private-key-file' ] as File ).path
+                }
+            );
+            setPopup( undefined );
+            return;
+        }
+
         // Prevent alias duplicates
         if ( sessions.find( session => session.alias &&
                                        session.alias.toLowerCase() === ( formObject[ 'alias' ] as string ).trim()
@@ -45,19 +62,6 @@ export function CreateSession( props: { session?: ISSHSessionSecure } ) {
                                        session.port === parseInt( formObject[ 'port' ] as string || '22' ) &&
                                        session.username === formObject[ 'username' ] ) ) {
             setErrorMessage( 'Session already exists' );
-            return;
-        }
-
-        if ( props.session ) {
-            window.api.sessions.update(
-                {
-                    hostAddress: formObject[ 'host' ] as string || props.session.hostAddress,
-                    port:        parseInt( formObject[ 'port' ] as string || '22' ),
-                    username:    formObject[ 'username' ] as string,
-                    uid:         props.session.uid,
-                    status:      props.session.status
-                }
-            );
             return;
         }
 

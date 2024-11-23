@@ -1,22 +1,21 @@
-import { useContext, useEffect }   from "react";
-import { NavigationContainer }     from "@renderer/components/container/Navigator";
-import { ContextMenuContext }      from "@renderer/contexts/ContextMenu";
-import EVENTS                      from "@/common/events.json";
-import { Settings }                from "@renderer/components/popups/Settings";
-import { PopupContext }            from "@renderer/contexts/Popups";
-import { setTheme }                from "@renderer/util/services/ThemeService";
-import { BasicApplicationContent } from "@renderer/components/container/BasicApplicationContent";
+import { EVENTS }                  from '@/common/app';
+import { BasicApplicationContent } from '@renderer/components/container/BasicApplicationContent';
+import { NavigationContainer }     from '@renderer/components/container/Navigator';
+import { Settings }                from '@renderer/components/popups/Settings';
+import { ContextMenuContext }      from '@renderer/contexts/ContextMenu';
+import { PopupContext }            from '@renderer/contexts/Popups';
+import { setTheme }                from '@renderer/util/services/ThemeService';
+import { useContext, useEffect }   from 'react';
 
 export function App() {
 
-    const { contextMenu } = useContext(ContextMenuContext);
-    const { setPopup }    = useContext(PopupContext);
+    const { contextMenu } = useContext( ContextMenuContext );
+    const { setPopup }    = useContext( PopupContext );
 
-    useEffect(() => {
+    useEffect( () => {
 
-
-        const handleNotification = (evt: any) => {
-            const element = document.createElement('div');
+        const handleNotification = ( evt: any ) => {
+            const element     = document.createElement( 'div' );
             element.classList.add(
                 'animate-in', 'fade-in-10', 'rounded-lg',
                 'transition-all', 'duration-300',
@@ -26,40 +25,40 @@ export function App() {
             element.style.left = '0px';
             element.style.top = '0px';
             element.innerText = evt.detail.message;
-            document.body.appendChild(element);
-            window.setTimeout(() => {
+            document.body.appendChild( element );
+            window.setTimeout( () => {
                 element.style.opacity = '0';
                 element.style.maxHeight = '0px';
-                window.setTimeout(() => {
+                window.setTimeout( () => {
                     element?.remove();
-                }, 300);
-            }, 2000);
+                }, 300 );
+            }, 2000 );
         };
 
-        const showSettings = () => setPopup({ content: <Settings/>, uid: 'settings' });
+        const showSettings = () => setPopup( { content: <Settings />, uid: 'settings' } );
 
-        window.addEventListener('notification', handleNotification);
+        window.addEventListener( 'notification', handleNotification );
 
-        if ( window.localStorage.getItem('theme') ) {
-            setTheme(window.localStorage.getItem('theme') as string);
+        if ( window.localStorage.getItem( 'theme' ) ) {
+            setTheme( window.localStorage.getItem( 'theme' ) as string );
         }
 
-        window.addEventListener(EVENTS.RENDERER.SHOW_SETTINGS, showSettings);
+        window.addEventListener( EVENTS.RENDERER.SHOW_SETTINGS, showSettings );
 
         return () => {
-            window.removeEventListener('notification', handleNotification);
-            window.removeEventListener(EVENTS.RENDERER.SHOW_SETTINGS, showSettings);
-        }
-    }, []);
+            window.removeEventListener( 'notification', handleNotification );
+            window.removeEventListener( EVENTS.RENDERER.SHOW_SETTINGS, showSettings );
+        };
+    }, [] );
 
     return (
-        <div className="flex flex-col justify-start items-stretch grow" style={{
-            textRendering: 'optimizeLegibility',
-        }}>
-            {contextMenu}
-            <NavigationContainer position='header' trulyIsTheNavigator/>
-            <BasicApplicationContent/>
-            <NavigationContainer position='footer'/>
+        <div className="flex flex-col justify-start items-stretch grow" style={ {
+            textRendering: 'optimizeLegibility'
+        } }>
+            { contextMenu }
+            <NavigationContainer position="header" trulyIsTheNavigator />
+            <BasicApplicationContent />
+            <NavigationContainer position="footer" />
         </div>
-    )
+    );
 }

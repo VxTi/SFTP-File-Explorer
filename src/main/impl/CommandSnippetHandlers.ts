@@ -1,4 +1,4 @@
-import EVENTS              from '@/common/events.json';
+import { EVENTS }          from '@/common/app';
 import { ICommandSnippet } from '@/common/ssh-definitions';
 import { ipcMain }         from 'electron';
 import { ConfigFile }      from '../fs/ConfigFile';

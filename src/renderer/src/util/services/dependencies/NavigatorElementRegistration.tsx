@@ -4,57 +4,55 @@
  * @date Created on Thursday, November 07 - 16:09
  */
 
-
-import { registerNavigatorElement }                          from "@renderer/util/services/NavigatorElementRegistrator";
-import { Columns2Icon, CpuIcon, SettingsIcon, TerminalIcon } from "lucide-react";
-import EVENTS                                                from "@/common/events.json";
+import { EVENTS }                                            from '@/common/app';
+import { registerNavigatorElement }                          from '@renderer/util/services/NavigatorElementRegistrator';
+import { Columns2Icon, CpuIcon, SettingsIcon, TerminalIcon } from 'lucide-react';
 
 registerNavigatorElement(
     'processes',
     {
-        icon: <CpuIcon size={16} className="text-primary" />,
+        icon:    <CpuIcon size={ 16 } className="text-primary" />,
         position: 'footer',
-        side: 'right',
-        title: 'Active Processes',
+        side:    'right',
+        title:   'Active Processes',
         onClick: () => {
 
         }
     }
-)
+);
 
 registerNavigatorElement(
     'terminal',
     {
-        icon: <TerminalIcon size={16} className="text-primary"/>,
+        icon:    <TerminalIcon size={ 16 } className="text-primary" />,
         position: 'footer',
-        title: 'Toggle terminal visibility',
-        side: 'right',
+        title:   'Toggle terminal visibility',
+        side:    'right',
         onClick: () => {
-            window.dispatchEvent(new CustomEvent(EVENTS.RENDERER.TOGGLE_TERMINAL));
+            window.dispatchEvent( new CustomEvent( EVENTS.RENDERER.TOGGLE_TERMINAL ) );
         }
-    });
-
+    } );
 
 registerNavigatorElement(
     'settings',
     {
-        icon: <SettingsIcon size={16} className="text-primary"/>,
+        icon:    <SettingsIcon size={ 16 } className="text-primary" />,
         position: 'header',
-        title: 'Settings',
-        side: 'right',
+        title:   'Settings',
+        side:    'right',
         onClick: () => {
-            window.dispatchEvent(new CustomEvent(EVENTS.RENDERER.SHOW_SETTINGS));
+            window.dispatchEvent( new CustomEvent( EVENTS.RENDERER.SHOW_SETTINGS ) );
         }
-    });
+    } );
 
 registerNavigatorElement(
     'navigation',
     {
-        icon: <Columns2Icon size={16} className="text-primary"/>,
+        icon:    <Columns2Icon size={ 16 } className="text-primary" />,
         position: 'footer',
-        title: 'Toggle Sidebar',
-        side: 'left',
+        title:   'Toggle Sidebar',
+        side:    'left',
         onClick: () => {
-            window.dispatchEvent(new CustomEvent(EVENTS.RENDERER.TOGGLE_SIDEBAR));
+            window.dispatchEvent( new CustomEvent( EVENTS.RENDERER.TOGGLE_SIDEBAR ) );
         }
-    });
+    } );

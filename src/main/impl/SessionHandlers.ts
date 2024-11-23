@@ -4,7 +4,7 @@
  * @date Created on Thursday, November 14 - 10:56
  */
 
-import EVENTS                             from '@/common/events.json';
+import { EVENTS }                         from '@/common/app';
 import { ISSHSession, ISSHSessionSecure } from '@/common/ssh-definitions';
 import { ipcMain }                        from 'electron';
 import { ConfigFile }                     from '../fs/ConfigFile';
@@ -51,6 +51,7 @@ ipcMain.handle( EVENTS.SESSIONS.INFO, ( _, sessionId: string ): ( ISSHSessionSec
  * @returns {string[]} The list of all registered sessions.
  */
 ipcMain.handle( EVENTS.SESSIONS.LIST, (): ISSHSessionSecure[] => {
+    console.log( SessionsConfig.value );
     return Object.keys( SessionsConfig.value )
                  .map( excludeSensitiveProperties )
                  .filter( ( session ) => session !== null );
@@ -83,13 +84,13 @@ ipcMain.handle( EVENTS.SESSIONS.CREATE, ( event, session: Omit<ISSHSession, 'uid
  * Updates properties of an existing session, given a session object.
  */
 ipcMain.handle( EVENTS.SESSIONS.UPDATE, ( event, session: ISSHSessionSecure ) => {
-
-    // If the session doesn't exist for some reason, just exit.
-    if ( !SessionsConfig.value[ session.uid ] ) {
+    const currentValue = SessionsConfig.valueAt( session.uid );
+    if ( !currentValue )
         return;
-    }
 
-    const currentValue = SessionsConfig.value[ session.uid ];
-    SessionsConfig.set( session.uid, { ...currentValue, session: { ...session, port: session.port || 22 } } );
+    SessionsConfig.set( session.uid, {
+        ...currentValue,
+        session: { ...session, port: session.port || 22, uid: session.uid }
+    } );
     event.sender.send( EVENTS.SESSIONS.LIST_CHANGED );
 } );

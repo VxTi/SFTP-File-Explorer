@@ -3,18 +3,18 @@
  * @author Luca Warmenhoven
  * @date Created on Thursday, November 07 - 18:22
  */
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 /**
  * A hook that returns a hashmap and two functions to add and remove values from the hashmap.
  * @param initialValue The initial hashmap to use.
  */
-export function useMap<K, V>(initialValue: Map<K, V> = new Map<K, V>()): [
+export function useMap<K, V>( initialValue?: Map<K, V> ): [
     Map<K, V>,
     (key: K, value: V) => void,
     (key: K) => void
 ] {
-    const [ map, setMap ] = useState<Map<K, V>>(initialValue);
+    const [ map, setMap ] = useState<Map<K, V>>( initialValue || new Map() );
 
     /**
      * Adds a value to the hashmap.

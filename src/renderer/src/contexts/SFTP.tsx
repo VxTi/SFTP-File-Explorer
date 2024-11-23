@@ -3,7 +3,7 @@
  * @author Luca Warmenhoven
  * @date Created on Wednesday, November 13 - 13:08
  */
-import EVENTS                                                                                   from '@/common/events.json';
+import { EVENTS }                                                                               from '@/common/app';
 import {
     IClient,
     ICommandSnippet,
@@ -60,7 +60,7 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
     const [ shellId, setShellId ] = useState<string | null>( null );
 
     const [ sessionId, setSessionId ] = useState<string | null>( null );
-    const [ status, setStatus ]     = useState<SFTPConnectionStatus>( 'disconnected' );
+    const [ status, setStatus ]           = useState<SFTPConnectionStatus>( 'disconnected' );
 
     const [ localCwd, setLocalCwd ] = useState<string>( window.api.fs.localHomeDir );
     const [ remoteCwd, setRemoteCwd ] = useState<string>( '/' );
@@ -120,9 +120,8 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
     }, [ sessionId ] );
 
     useEffect( () => {
-        if ( !sessionId ) {
+        if ( !sessionId )
             return;
-        }
 
         setLocalClient(
             {
@@ -164,13 +163,14 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
         <SFTPContext.Provider value={ {
             commandSnippets: snippets,
             clients:    { local: localClient, remote: remoteClient },
-            sessions,
-            shellId,
             setShellID: setShellId,
+            shellId,
+            sessions,
             createShell,
             authorize,
             sessionId,
-            status, setStatus
+            status,
+            setStatus
         } }>
             { props.children }
         </SFTPContext.Provider>

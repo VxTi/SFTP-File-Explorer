@@ -4,7 +4,7 @@
  * @date Created on Wednesday, November 13 - 14:44
  */
 
-import EVENTS                                                           from '@/common/events.json';
+import { EVENTS }                                                       from '@/common/app';
 import { IFileEntry }                                                   from '@/common/file-information';
 import { IShellMessage, IShellSession, ISSHSession, TConnectionStatus } from '@/common/ssh-definitions';
 import { ipcMain, systemPreferences }                                   from 'electron';
@@ -108,7 +108,7 @@ ipcMain.handle( EVENTS.SFTP.SHELL.CREATE, ( event, sessionId: string ) => {
         }
 
         const shellId = ConfigFile.randomKey();
-        event.sender.send( EVENTS.SFTP.SHELL.CREATED, { shellId: shellId } );
+        event.sender.send( EVENTS.SFTP.SHELL.CREATED, { shellId } );
 
         let sessionContent = '';
 
