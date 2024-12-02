@@ -47,6 +47,15 @@ contextBridge.exposeInMainWorld( 'api', {
         listFiles:    async ( targetPath: string ): Promise<IFileEntry[]> => {
             return await electronAPI.ipcRenderer.invoke( EVENTS.LOCAL_FS.LIST_FILES, targetPath );
         },
+        removeFile: ( targetPath: string ): void => {
+            electronAPI.ipcRenderer.invoke( EVENTS.LOCAL_FS.REMOVE, targetPath );
+        },
+        putFile:    ( targetPath: string, data: string ): void => {
+            electronAPI.ipcRenderer.invoke( EVENTS.LOCAL_FS.PUT_FILE, targetPath, data );
+        },
+        mkdir:      ( targetPath: string ): void => {
+            electronAPI.ipcRenderer.invoke( EVENTS.LOCAL_FS.MKDIR, targetPath );
+        },
         localHomeDir: electronAPI.ipcRenderer.sendSync( EVENTS.LOCAL_FS.HOME_DIRECTORY ),
         separator:    path.sep
     },
@@ -118,6 +127,14 @@ contextBridge.exposeInMainWorld( 'api', {
                  */
                 remove: ( snippetId: string ): void => {
                     electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.SNIPPET.REMOVE, snippetId );
+                },
+
+                /**
+                 * Updates the content of an existing snippet.
+                 * @param snippet The snippet to update.
+                 */
+                update: ( snippet: ICommandSnippet ): void => {
+                    electronAPI.ipcRenderer.invoke( EVENTS.SFTP.SHELL.SNIPPET.UPDATE, snippet );
                 }
             }
         },

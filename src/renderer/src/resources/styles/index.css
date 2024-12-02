@@ -713,6 +713,11 @@ video {
   margin-bottom: 0.25rem;
 }
 
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -721,12 +726,12 @@ video {
   margin-bottom: 0.75rem;
 }
 
-.ml-2 {
-  margin-left: 0.5rem;
+.ml-1 {
+  margin-left: 0.25rem;
 }
 
-.ml-8 {
-  margin-left: 2rem;
+.ml-2 {
+  margin-left: 0.5rem;
 }
 
 .ml-auto {
@@ -739,6 +744,10 @@ video {
 
 .mr-2 {
   margin-right: 0.5rem;
+}
+
+.mr-4 {
+  margin-right: 1rem;
 }
 
 .mt-3 {
@@ -787,6 +796,10 @@ video {
 
 .h-6 {
   height: 1.5rem;
+}
+
+.h-7 {
+  height: 1.75rem;
 }
 
 .h-8 {
@@ -847,6 +860,10 @@ video {
 
 .w-\[1px\] {
   width: 1px;
+}
+
+.w-\[200px\] {
+  width: 200px;
 }
 
 .w-full {
@@ -1155,7 +1172,7 @@ video {
 }
 
 .bg-border {
-  background-color: var(--color-border / var(--tw-background-opacity));
+  background-color: var(--color-border);
 }
 
 .bg-hover {
@@ -1170,10 +1187,6 @@ video {
   background-color: var(--color-secondary);
 }
 
-.bg-special {
-  background-color: var(--color-special);
-}
-
 .bg-tertiary {
   background-color: var(--color-tertiary);
 }
@@ -1182,16 +1195,16 @@ video {
   background-color: transparent;
 }
 
-.bg-opacity-20 {
-  --tw-bg-opacity: 0.2;
-}
-
 .fill-special {
   fill: var(--color-special);
 }
 
 .stroke-primary {
   stroke: var(--color-text-primary);
+}
+
+.p-0 {
+  padding: 0px;
 }
 
 .p-0\.5 {
@@ -1269,8 +1282,8 @@ video {
   padding-left: 0.125rem;
 }
 
-.pl-8 {
-  padding-left: 2rem;
+.pl-1 {
+  padding-left: 0.25rem;
 }
 
 .pr-1 {
@@ -1353,6 +1366,10 @@ video {
 
 .opacity-0 {
   opacity: 0;
+}
+
+.opacity-50 {
+  opacity: 0.5;
 }
 
 .shadow-lg {
@@ -1525,10 +1542,6 @@ video {
 
 .hover\:bg-tertiary:hover {
   background-color: var(--color-tertiary);
-}
-
-.hover\:bg-opacity-100:hover {
-  --tw-bg-opacity: 1;
 }
 
 .hover\:text-special:hover {

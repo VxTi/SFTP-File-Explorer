@@ -7,7 +7,7 @@
 import { EVENTS }                         from '@/common/app';
 import { ISSHSession, ISSHSessionSecure } from '@/common/ssh-definitions';
 import { ipcMain }                        from 'electron';
-import { ConfigFile }                     from '../fs/ConfigFile';
+import { ConfigFile }                     from '../util/ConfigFile';
 import { IRegisteredSession }             from './SFTPHandlers';
 
 export const SessionsConfig = new ConfigFile<IRegisteredSession>(

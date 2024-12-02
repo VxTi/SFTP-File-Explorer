@@ -11,11 +11,11 @@ export const App: Record<string, any> = {
  */
 export interface InternalError {
     /** The reason of the exception */
-    reason: string;
+    error: string;
 
     /**
      * Description of the exception (optional, if the reason is
      * descriptive enough, then this can be omitted
      */
-    description?: string;
+    details?: string;
 }

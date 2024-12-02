@@ -2,17 +2,17 @@
  * @fileoverview BasicApplicationContent.tsx
  */
 
-import { Sidebar }                            from "@renderer/components/container/Sidebar";
-import { FileExplorer }                       from "@renderer/components/container/FileExplorer";
-import { TerminalContainer } from "@renderer/components/container/Terminal";
-import { SFTPContext }       from "@renderer/contexts/SFTP";
-import { useContext }        from "react";
-import { LoadingRotor }                       from "@renderer/components/LoadingRotor";
-import { CloudOffIcon, PlusIcon, UnplugIcon } from "lucide-react";
-import { PopupContext }                       from "@renderer/contexts/Popups";
-import { CreateSession }                      from "@renderer/components/popups/CreateSession";
-import { ActiveSessionsHeader }               from "@renderer/components/file-explorer/ActiveSessionsHeader";
-import { QuickConnect }                       from "@renderer/components/popups/QuickConnect";
+import { FileExplorer }                       from '@renderer/components/container/FileExplorer';
+import { Sidebar }                            from '@renderer/components/container/Sidebar';
+import { TerminalContainer }                  from '@renderer/components/container/Terminal';
+import { ActiveSessionsHeader }               from '@renderer/components/file-explorer/ActiveSessionsHeader';
+import { LoadingRotor }                       from '@renderer/components/LoadingRotor';
+import { CreateSession }                      from '@renderer/components/popups/CreateSession';
+import { QuickConnect }                       from '@renderer/components/popups/QuickConnect';
+import { PopupContext }                       from '@renderer/contexts/Popups';
+import { SFTPContext }                        from '@renderer/contexts/SFTP';
+import { CloudOffIcon, PlusIcon, UnplugIcon } from 'lucide-react';
+import { useContext }                         from 'react';
 
 export function BasicApplicationContent() {
 
@@ -71,9 +71,7 @@ function MainMenuAction(props: { title: string, icon: JSX.Element, onClick: () =
             className="rounded-lg px-3 py-1.5 mt-3 basis-40 text-nowrap grow bg-secondary text-secondary flex items-center justify-start hover:text-special transition-colors duration-300 cursor-pointer"
             onClick={() => props.onClick()}>
             {props.icon}
-            <span className="text-center w-full">
-            {props.title}
-            </span>
+            <span className="text-center w-full font-satoshi">{ props.title }</span>
         </button>
     )
 }

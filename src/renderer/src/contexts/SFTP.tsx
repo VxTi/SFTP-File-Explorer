@@ -107,6 +107,7 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
 
         setSessionId( response.sessionId );
         setStatus( 'connected' );
+        console.log( 'Connected: ', response.sessionId, response.error );
     }, [ sessionId, status ] );
 
     /**
@@ -139,6 +140,7 @@ export function SFTPContextProvider( props: { children: ReactNode } ) {
 
         window.api.sftp.homeDir( sessionId )
               .then( ( remoteHomeDir ) => {
+                  console.log( remoteHomeDir );
                   setRemoteCwd( () => {
                       setRemoteClient(
                           {

@@ -10,6 +10,9 @@ declare global {
             on: ( channel: string, listener: ( event: any, ...args: any[] ) => void ) => void,
             fs: {
                 listFiles: ( targetPath: string ) => Promise<IFileEntry[]>,
+                removeFile: ( targetPath: string ) => void,
+                putFile: ( targetPath: string, data: string ) => void,
+                mkdir: ( targetPath: string ) => void,
                 localHomeDir: string,
                 separator: string
             },
@@ -23,6 +26,7 @@ declare global {
                     snippets: {
                         list: () => Promise<ICommandSnippet[]>,
                         create: ( snippet: Omit<ICommandSnippet, 'snippetId'> ) => void,
+                        update: ( snippet: ICommandSnippet ) => void,
                         remove: ( snippetId: string ) => void
                     }
                 },

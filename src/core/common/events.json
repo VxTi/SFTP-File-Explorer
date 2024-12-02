@@ -12,7 +12,10 @@
     },
     "LOCAL_FS": {
         "LIST_FILES": "local-fs::list-files",
-        "HOME_DIRECTORY": "local-fs::home-directory"
+        "HOME_DIRECTORY": "local-fs::home-directory",
+        "REMOVE": "local-fs::remove",
+        "MKDIR": "local-fs::mkdir",
+        "PUT_FILE": "local-fs::put-file"
     },
     "SFTP": {
         "SHELL": {
@@ -35,6 +38,13 @@
         },
         "LIST_FILES": "sftp::list-files",
         "HOME_DIR": "sftp::home-dir",
+        "GET_FILE": "sftp::get-file",
+        "PUT_FILE": "sftp::put-file",
+        "RM_FILE": "sftp::rm-file",
+        "PUT_DIR": "sftp::put-dir",
+        "GET_DIR": "sftp::get-dir",
+        "PUT_SYMLINK": "sftp::put-symlink",
+        "MV_FILE": "sftp-mv-file",
         "ESTABLISH_CONNECTION": "sftp::establish-connection",
         "CONNECTION_REFUSED": "sftp::connection-refused"
     },

@@ -66,5 +66,11 @@ export interface IFileEntry extends IFileInfo {
 
     /** Path of the file, excluding the name */
     path: string;
+}
 
+/**
+ * Representation of a file.
+ */
+export interface IFile extends IFileEntry {
+    content: string;
 }

@@ -7,7 +7,7 @@ import { EVENTS }                                      from '@/common/app';
 import { IShellMessage }                               from '@/common/ssh-definitions';
 import { ResizableContainer }                          from '@renderer/components/container/ResizableContainer';
 import { InteractiveIconClasses, InteractiveIconSize } from '@renderer/components/Icons';
-import { Renamable }                                   from '@renderer/components/interactive/Renamable';
+import { Renameable }                                  from '@renderer/components/interactive/Renameable';
 import { ContextMenu }                                 from '@renderer/contexts/ContextMenu';
 import { SFTPContext }                                 from '@renderer/contexts/SFTP';
 import { useMap }                                      from '@renderer/hooks/UseMap';
@@ -51,11 +51,11 @@ defaultTerminal.loadAddon( fitAddon );
 export function TerminalContainer() {
     const terminalContainerRef = useRef<HTMLDivElement>( null );
 
-    const [ terminalSize, setTerminalSize ]       = useState<number>( 200 );
-    const [ terminalVisible, setTerminalVisible ] = useState<boolean>( true );
-    const [ isMaximized, setMaximized ]           = useState<boolean>( false );
-    const [ terminalSessions, addSession, removeSession ] = useMap<string, string>();
-    const { sessionId, shellId, setShellID }      = useContext( SFTPContext );
+    const [ terminalSize, setTerminalSize ]               = useState<number>( 200 );
+    const [ terminalVisible, setTerminalVisible ]         = useState<boolean>( true );
+    const [ isMaximized, setMaximized ]                   = useState<boolean>( false );
+    const [ terminalSessions, addSession, removeSession ] = useMap<string, string>( new Map<string, string>() );
+    const { sessionId, shellId, setShellID }              = useContext( SFTPContext );
 
     useEffect( () => {
 
@@ -91,15 +91,10 @@ export function TerminalContainer() {
                         lineBuffer = newBuffer;
                         break;
                     case 'Enter':
-                        if ( lineBuffer.trim().length === 0 || !shellId ) {
+                        if ( lineBuffer.trim().length === 0 || !shellId )
                             break;
-                        }
 
-                        window.api.sftp.shell.exec(
-                            sessionId,
-                            shellId,
-                            lineBuffer
-                        );
+                        window.api.sftp.shell.exec( sessionId, shellId, lineBuffer );
                         defaultTerminal.write( '\n\r' );
                         lineBuffer = '';
                         break;
@@ -145,17 +140,12 @@ export function TerminalContainer() {
         } );
 
         window.api.on( EVENTS.SFTP.SHELL.MESSAGE, ( _, messageObj: IShellMessage ) => {
-            console.log( terminalSessions.has( messageObj.shellId ), messageObj.shellId );
+            console.log( terminalSessions.has( messageObj.shellId ), messageObj.shellId, messageObj.message );
             /*            if ( !terminalSessions.has(messageObj.shellId) ) {
              console.log("Shell not present", terminalSessions, messageObj.shellId)
              return;}*/
 
-            const msg = messageObj.message.replaceAll( '\n', '\r\n' );
-
-            if ( messageObj.target === 'stderr' )
-                defaultTerminal.write( '\x1b[31m' + msg + '\x1b[0m' );
-            else
-                defaultTerminal.write( msg );
+            defaultTerminal.write( messageObj.message.replaceAll( '\n', '\r\n' ) );
         } );
         if ( !shellId && sessionId )
             window.api.sftp.shell.create( sessionId );
@@ -177,7 +167,7 @@ export function TerminalContainer() {
              style={ {
                  gridTemplateColumns: 'auto 1fr auto auto'
              } }>
-            <span className="text-secondary py-1 px-2 text-sm">Terminals</span>
+            <span className="text-secondary py-1 px-2 text-sm font-satoshi">Terminals</span>
             <div className="relative w-full h-full overflow-x-scroll">
                 <div
                     className="absolute left-0 top-0 w-full h-full flex flex-row justify-start items-center hide-scrollbar">
@@ -212,7 +202,7 @@ function ShellSession( props: { shellId: string, sessionId: string, sessionName:
 
     return (
         <ContextMenu<HTMLDivElement> items={ [
-            { type: 'item', title: 'Rename', onClick: () => console.log( 'Rename' ) },
+            { type: 'item', title: 'Rename', onClick: () => console.log( 'Rename' ), icon: 'rename' },
             { type: 'item', title: 'Clear', onClick: () => console.log( 'Clear' ) },
             {
                 type:    'item',
@@ -225,7 +215,7 @@ function ShellSession( props: { shellId: string, sessionId: string, sessionName:
                 <div
                     ref={ ref }
                     className={ `rounded-lg flex my-0.5 mx-1 flex-row justify-center items-center gap-2 py-1 px-4 group hover:bg-hover ${ ( props.shellId === shellId ) ? 'bg-secondary' : 'bg-primary' }` }>
-                    <Renamable
+                    <Renameable
                         className="text-secondary group-hover:text-secondary-hover text-sm hover:cursor-pointer text-nowrap"
                         onClick={ () => setShellID( props.shellId ) }
                         initialValue={ props.sessionName }

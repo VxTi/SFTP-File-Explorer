@@ -1,7 +1,7 @@
 import { EVENTS }          from '@/common/app';
 import { ICommandSnippet } from '@/common/ssh-definitions';
 import { ipcMain }         from 'electron';
-import { ConfigFile }      from '../fs/ConfigFile';
+import { ConfigFile }      from '../util/ConfigFile';
 
 const minimumSnippetTitleLength = 3;
 const CommandSnippetsConfig     = new ConfigFile<Omit<ICommandSnippet, 'snippetId'>>( { fileName: 'snippets.json' } );
@@ -42,10 +42,14 @@ ipcMain.handle( EVENTS.SFTP.SHELL.SNIPPET.REMOVE, ( event, snippetId: string ) =
  */
 ipcMain.handle( EVENTS.SFTP.SHELL.SNIPPET.UPDATE, ( event, snippet: ICommandSnippet ) => {
     if ( !CommandSnippetsConfig.valueAt( snippet.snippetId ) ||
-         snippet.title.trim.length < minimumSnippetTitleLength ||
-         snippet.command.length === 0 )
+         snippet.title.trim().length < minimumSnippetTitleLength ||
+         snippet.command.trim().length === 0 )
         return;
 
-    CommandSnippetsConfig.set( snippet.snippetId, { ...snippet } as ICommandSnippet );
+    CommandSnippetsConfig.set( snippet.snippetId, {
+        title:        snippet.title,
+        command:      snippet.command,
+        runOnConnect: snippet.runOnConnect
+    } as ICommandSnippet );
     event.sender.send( EVENTS.SFTP.SHELL.SNIPPET.LIST_CHANGED );
 } );

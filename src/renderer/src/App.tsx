@@ -1,4 +1,4 @@
-import { EVENTS }                  from '@/common/app';
+import { EVENTS, InternalError }   from '@/common/app';
 import { BasicApplicationContent } from '@renderer/components/container/BasicApplicationContent';
 import { NavigationContainer }     from '@renderer/components/container/Navigator';
 import { Settings }                from '@renderer/components/popups/Settings';
@@ -13,6 +13,10 @@ export function App() {
     const { setPopup }    = useContext( PopupContext );
 
     useEffect( () => {
+
+        window.api.on( EVENTS.MESSAGES.INTERNAL_ERROR, ( _, error: InternalError ) => {
+            console.error( `Internal Error - ${ error.error }`, error.details || '' );
+        } );
 
         const handleNotification = ( evt: any ) => {
             const element     = document.createElement( 'div' );

@@ -4,6 +4,6 @@
  * @date Created on Wednesday, November 13 - 11:58
  */
 
-import './impl/LocalFSHandlers';
-import './impl/SFTPHandlers';
-import './impl/CommandSnippetHandlers';
+import './handlers/LocalFSHandlers';
+import './handlers/SFTPHandlers';
+import './handlers/CommandSnippetHandlers';
